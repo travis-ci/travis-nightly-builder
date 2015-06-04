@@ -4,9 +4,8 @@ require 'open-uri'
 
 desc "Build up build request payload file based on information in .travis.yml"
 task :build_payload, [:repo] do |t, args|
-  puts args
-  repo = args[:repo][:repo]
-  config = YAML.load(open("https://raw.githubusercontent.com/travis-ci/#{repo}/master/.travis.yml")).to_json
+  repo = args[:repo]
+  config = YAML.load(open("https://raw.githubusercontent.com/travis-ci/#{repo}/master/.travis.yml"))
   payload = {
     "request"=> {
       "message"=>"Build #{repo}",
@@ -24,7 +23,7 @@ task :build_payload, [:repo] do |t, args|
 end
 
 desc "Issue build request"
-task :build, [:repo] do |t, repo|
-  Rake::Task[:build_payload].invoke(repo)
-  `curl -s -X POST -H Content-Type: application/json -H #{ENV["TRAVIS_TOKEN"]} -d @payload https://api.travis-ci.com/requests`
+task :build, [:repo] do |t, args|
+  Rake::Task[:build_payload].invoke(args[:repo])
+  `curl -s -X POST -H 'Content-Type: application/json' -H 'Authorization: token #{ENV["TRAVIS_TOKEN"]}' -d @payload https://api.travis-ci.org/requests`
 end
