@@ -8,7 +8,7 @@ task :build_payload, [:repo] do |t, args|
   config = YAML.load(open("https://raw.githubusercontent.com/travis-ci/#{repo}/master/.travis.yml"))
   payload = {
     "request"=> {
-      "message"=>"Build #{repo}",
+      "message"=>"Build #{repo} #{Time.now.utc.strftime('%Y-%m-%d-%h-%H-%M-%S')}",
       "repository"=>{
         "owner_name"=>"travis-ci",
         "name"=>"#{repo}"
