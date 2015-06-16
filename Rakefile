@@ -9,10 +9,6 @@ task :build_payload, [:repo] do |t, args|
   payload = {
     "request"=> {
       "message"=>"Build #{repo} #{Time.now.utc.strftime('%Y-%m-%d-%H-%M-%S')}",
-      "repository"=>{
-        "owner_name"=>"travis-ci",
-        "name"=>"#{repo}"
-        },
       "branch"=>"master",
       "config"=>config
       }
@@ -25,5 +21,5 @@ end
 desc "Issue build request"
 task :build, [:repo] do |t, args|
   Rake::Task[:build_payload].invoke(args[:repo])
-  `curl -s -X POST -H 'Content-Type: application/json' -H 'Authorization: token #{ENV["TRAVIS_TOKEN"]}' -d @payload https://api.travis-ci.org/requests`
+  `curl -s -X POST -H 'Content-Type: application/json' -H "Travis-API-Version: 3" -H 'Authorization: token #{ENV["TRAVIS_TOKEN"]}' -d @payload https://api.travis-ci.org/repo/travis-ci%2F#{args[:repo]}/requests`
 end
