@@ -7,7 +7,7 @@ task :build_payload, [:repo, :branch, :extra] do |t, args|
   repo = args[:repo]
   branch = args[:branch] || 'master'
   config = YAML.load(open("https://raw.githubusercontent.com/travis-ci/#{repo}/#{branch}/.travis.yml"))
-  message = "Build repo=#{repo}; branch=#{branch}%s #{Time.now.utc.strftime('%Y-%m-%d-%H-%M-%S')}"
+  message = "Build repo=#{repo}; branch=#{branch}%s #{Time.now.utc.strftime('%Y-%m-%d-%H-%M-%S')}" % [ nil ]
   if args[:extra]
     config["env"]["global"] << args[:extra]
     message = message % ["; (#{args[:extra]})"]
