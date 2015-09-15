@@ -37,3 +37,4 @@ build/
 # ignore Rake task artifact
 payload
 
+.*env
