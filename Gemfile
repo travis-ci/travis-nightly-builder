@@ -1,6 +1,5 @@
 source 'https://rubygems.org'
 
 gem 'rake'
-gem 'json'
-
 gem 'faraday'
+gem 'rubocop', group: [:development, :test]
