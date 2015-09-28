@@ -24,7 +24,7 @@ task :build, [:repo, :branch, :extra] do |_t, args|
   config = {}
 
   if args[:extra]
-    config = { 'env' => { 'global' => [args[:extra]] } }
+    config = { 'env' => { 'global' => args[:extra].split } }
     message = format(message, "; (#{args[:extra]})")
   else
     message = format(message, nil)
