@@ -20,3 +20,7 @@ rake build['cpython-builder','version','VERSION=3.5.0b3']
 ```
 
 The task needs `VERSION=…` set, or else it will fail.
+
+## [travis-nightly-builder](https://github.com/travis-ci/apt-whitelist-checker)
+
+Runs tests for APT package whitelist requests
