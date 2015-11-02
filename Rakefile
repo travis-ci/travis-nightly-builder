@@ -16,13 +16,16 @@ task default: [:rubocop, :spec]
 
 desc 'Issue build request'
 task :build, [:repo, :branch, :extra] do |_t, args|
+  $LOAD_PATH.unshift(File.expand_path('../lib', __FILE__))
+  require 'travis'
+
   response = Travis::NightlyBuilder::Runner.new(
-    api_endpoint: ENV.fetch('TRAVIS_API_ENDPOINT'),
+    api_endpoint: ENV.fetch('TRAVIS_API_ENDPOINT', 'https://api.travis-ci.org'),
     token: ENV.fetch('TRAVIS_TOKEN')
   ).run(
     repo: args[:repo],
     branch: args[:branch] || 'default',
-    env: args[:extra].to_s.split
+    env: args[:extra]
   )
 
   puts response.body

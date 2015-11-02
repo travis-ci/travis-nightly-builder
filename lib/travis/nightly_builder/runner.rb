@@ -22,14 +22,14 @@ module Travis
           "#{Time.now.utc.strftime('%Y-%m-%d-%H-%M-%S')}"
         config = {}
 
-        if args[:extra]
+        unless env.empty?
           config = {
             'env' => {
               'global' => env
             }
           }
 
-          message = format(message, "; (#{env.inspect})")
+          message = format(message, "; (#{env})")
         else
           message = format(message, nil)
         end
