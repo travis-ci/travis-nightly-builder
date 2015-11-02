@@ -22,7 +22,9 @@ module Travis
           "#{Time.now.utc.strftime('%Y-%m-%d-%H-%M-%S')}"
         config = {}
 
-        unless env.empty?
+        if env.empty?
+          message = format(message, nil)
+        else
           config = {
             'env' => {
               'global' => env
@@ -30,8 +32,6 @@ module Travis
           }
 
           message = format(message, "; (#{env})")
-        else
-          message = format(message, nil)
         end
 
         conn.post do |req|
