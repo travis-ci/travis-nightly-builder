@@ -49,7 +49,7 @@ module Travis
         halt 400 unless results.success?
 
         status 201
-        json data: results.map { |r| JSON.parse(r.body) }
+        json data: [JSON.parse(results.body)]
       end
 
       run! if app_file == $PROGRAM_NAME
