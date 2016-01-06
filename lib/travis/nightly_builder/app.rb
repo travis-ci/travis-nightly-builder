@@ -39,11 +39,13 @@ module Travis
       post '/build/:repo' do
         param :branch, String, default: 'default'
         param :env, Array, default: []
+        param :source, String, default: ENV['DYNO']
 
         results = runner.run(
           repo: params['repo'],
           branch: params['branch'],
-          env: params['env']
+          env: params['env'],
+          source: params['source']
         )
 
         halt 400 unless results.success?

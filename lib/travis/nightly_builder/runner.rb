@@ -13,15 +13,15 @@ module Travis
         @owner = owner
       end
 
-      def run(repo: '', branch: 'default', env: [])
+      def run(repo: '', branch: 'default', env: [], source: 'rake')
         conn = Faraday.new(url: api_endpoint) do |faraday|
           faraday.request :url_encoded
           faraday.response :logger
           faraday.adapter Faraday.default_adapter
         end
 
-        message = "Build repo=#{repo}; branch=#{branch}%s " \
-          "#{Time.now.utc.strftime('%Y%m%dT%H%M%SZ')}"
+        message = "Build repo=#{repo}; branch=#{branch}; " \
+          "source=#{source}%s #{Time.now.utc.strftime('%Y%m%dT%H%M%SZ')}"
         config = {}
 
         if env.empty?
