@@ -46,7 +46,7 @@ module Travis
           env: params['env']
         )
 
-        halt 400 if results.empty?
+        halt 400 unless results.success?
 
         status 201
         json data: results.map { |r| JSON.parse(r.body) }
