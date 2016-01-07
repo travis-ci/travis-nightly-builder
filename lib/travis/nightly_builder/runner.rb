@@ -14,17 +14,13 @@ module Travis
       end
 
       def run(repo: '', branch: 'default', env: [], source: 'rake')
-        conn = Faraday.new(url: api_endpoint) do |faraday|
-          faraday.request :url_encoded
-          faraday.response :logger
-          faraday.adapter Faraday.default_adapter
-        end
+        conn = build_conn
 
         message = "Build repo=#{repo}; branch=#{branch}; " \
           "source=#{source}%s #{Time.now.utc.strftime('%Y%m%dT%H%M%SZ')}"
         config = {}
 
-        if env.empty?
+        if env.nil? || env.empty?
           message = format(message, nil)
         else
           config = {
@@ -48,6 +44,16 @@ module Travis
               config: config
             }
           }.to_json
+        end
+      end
+
+      private
+
+      def build_conn
+        Faraday.new(url: api_endpoint) do |faraday|
+          faraday.request :url_encoded
+          faraday.response :logger
+          faraday.adapter Faraday.default_adapter
         end
       end
     end
