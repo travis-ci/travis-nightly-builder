@@ -16,7 +16,7 @@ module Travis
       def run(repo: '', branch: 'default', env: [], source: 'rake')
         conn = build_conn
 
-        message = "Build repo=#{repo}; branch=#{branch}; " \
+        message = "Build branch=#{branch}; " \
           "source=#{source}%s #{Time.now.utc.strftime('%Y%m%dT%H%M%SZ')}"
         config = {}
 
