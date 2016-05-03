@@ -1,16 +1,18 @@
 # travis-nightly-builder
 Rake tasks to build compatible language runtimes via API.
 
-The Rake task `build` tasks a few arguments and invokes appropriate
+The Rake task `build` tasks 3 arguments (shown below) and invokes appropriate
 API calls to initiate builds.
 
-The Rake task taks 3 arugments:
+## `build` Rake task rguments
 
 1. Repository name
 1. Branch to build
 1. Space-delimited argument list to override the builds
 
-## [travis-rubies](https://github.com/travis-ci/travis-rubies)
+## Compatible repositories
+
+### [travis-rubies](https://github.com/travis-ci/travis-rubies)
 
 Builds Ruby
 
@@ -18,11 +20,11 @@ Builds Ruby
 $ rake build['travis-rubies','build','RUBY=2.1.9']
 ```
 
-## [php-src-builder](https://github.com/travis-ci/php-src-builder)
+### [php-src-builder](https://github.com/travis-ci/php-src-builder)
 
 Builds PHP
 
-## [cpython-builder](https://github.com/travis-ci/cpython-builder)
+### [cpython-builder](https://github.com/travis-ci/cpython-builder)
 
 Builds Python
 
@@ -32,6 +34,6 @@ $ rake build['cpython-builder','version','VERSION=3.5.0b3']
 
 The task needs `VERSION=…` set, or else it will fail.
 
-## [travis-nightly-builder](https://github.com/travis-ci/apt-whitelist-checker)
+### [travis-nightly-builder](https://github.com/travis-ci/apt-whitelist-checker)
 
 Runs tests for APT package whitelist requests
