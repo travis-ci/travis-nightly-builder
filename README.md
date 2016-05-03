@@ -1,6 +1,14 @@
 # travis-nightly-builder
 Rake tasks to build "nightly" builds
 
+## [travis-rubies](https://github.com/travis-ci/travis-rubies)
+
+Builds Ruby
+
+```ruby
+rake build['travis-rubies','build','RUBY=2.1.9']
+```
+
 ## [php-src-builder](https://github.com/travis-ci/php-src-builder)
 
 Builds PHP
