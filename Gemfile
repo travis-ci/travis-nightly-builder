@@ -1,7 +1,5 @@
 source 'https://rubygems.org'
 
-ruby '2.3.0' if ENV.key?('DYNO')
-
 gem 'faraday'
 gem 'puma'
 gem 'rake'
