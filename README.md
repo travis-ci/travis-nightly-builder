@@ -24,6 +24,10 @@ $ rake build['travis-rubies','build','RUBY=2.1.9']
 
 Builds PHP
 
+```sh-session
+$ rake build['php-src-builder','default','VERSION=7.0.6 ALIAS=7.0']
+```
+
 ### [cpython-builder](https://github.com/travis-ci/cpython-builder)
 
 Builds Python
@@ -34,6 +38,6 @@ $ rake build['cpython-builder','version','VERSION=3.5.0b3']
 
 The task needs `VERSION=…` set, or else it will fail.
 
-### [travis-nightly-builder](https://github.com/travis-ci/apt-whitelist-checker)
+### [apt-whitelist-checker](https://github.com/travis-ci/apt-whitelist-checker)
 
 Runs tests for APT package whitelist requests
