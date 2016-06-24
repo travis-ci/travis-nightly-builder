@@ -38,6 +38,14 @@ $ rake build['cpython-builder','version','VERSION=3.5.0b3']
 
 The task needs `VERSION=…` set, or else it will fail.
 
+### [travis-erlang-builder](https://github.com/travis-ci/travis-erlang-builder)
+
+Builds OTP Release
+
+```sh-session
+$ rake build['travis-erlang-builder','version','ERLANG_VERSION=19.0']
+```
+
 ### [apt-whitelist-checker](https://github.com/travis-ci/apt-whitelist-checker)
 
 Runs tests for APT package whitelist requests
