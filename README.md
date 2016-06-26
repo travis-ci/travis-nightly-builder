@@ -46,6 +46,14 @@ Builds OTP Release
 $ rake build['travis-erlang-builder','version','ERLANG_VERSION=19.0']
 ```
 
+### [perl-builder](https://github.com/travis-ci/perl-builder)
+
+Builds Perl
+
+```sh-session
+$ bundle exec rake build['perl-builder','master',"VERSION=perl-5.24.0 ALIAS=perl-5.24"]
+```
+
 ### [apt-whitelist-checker](https://github.com/travis-ci/apt-whitelist-checker)
 
 Runs tests for APT package whitelist requests
