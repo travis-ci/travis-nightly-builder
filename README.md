@@ -51,7 +51,7 @@ $ rake build['travis-erlang-builder','version','ERLANG_VERSION=19.0']
 Builds Perl
 
 ```sh-session
-$ bundle exec rake build['perl-builder','master',"VERSION=perl-5.24.0 ALIAS=perl-5.24"]
+$ bundle exec rake build['perl-builder','master',"VERSION=perl-5.24.0 NAME=5.24.0 ALIAS=5.24"]
 ```
 
 ### [apt-whitelist-checker](https://github.com/travis-ci/apt-whitelist-checker)
