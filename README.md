@@ -33,7 +33,7 @@ $ rake build['php-src-builder','default','VERSION=7.0.6 ALIAS=7.0']
 Builds Python
 
 ```sh-session
-$ rake build['cpython-builder','version','VERSION=3.5.0b3']
+$ rake build['cpython-builder','default','VERSION=3.5.0b3']
 ```
 
 The task needs `VERSION=…` set, or else it will fail.
@@ -43,7 +43,7 @@ The task needs `VERSION=…` set, or else it will fail.
 Builds OTP Release
 
 ```sh-session
-$ rake build['travis-erlang-builder','version','ERLANG_VERSION=19.0']
+$ rake build['travis-erlang-builder','master','ERLANG_VERSION=19.0']
 ```
 
 ### [perl-builder](https://github.com/travis-ci/perl-builder)
