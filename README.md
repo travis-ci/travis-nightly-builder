@@ -54,6 +54,12 @@ Builds Perl
 $ bundle exec rake build['perl-builder','master',"VERSION=perl-5.24.0 NAME=5.24.0 ALIAS=5.24"]
 ```
 
+For Perl with extra configuration flags, do:
+
+```sh-sessin
+$ bundle exec rake build['perl-builder','master',"VERSION=perl-5.24.0 NAME=5.24.0-shrplib ARGS='-Duseshrplib -Duseithreads'"]
+```
+
 ### [apt-whitelist-checker](https://github.com/travis-ci/apt-whitelist-checker)
 
 Runs tests for APT package whitelist requests
