@@ -3,4 +3,4 @@ language: ruby
 cache:
   bundler: true
 
-rvm: 2.3.0
+rvm: 2.3.4
