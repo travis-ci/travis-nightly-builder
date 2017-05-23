@@ -1,6 +1,7 @@
 source 'https://rubygems.org'
 
 gem 'faraday'
+gem 'faraday_middleware'
 gem 'puma'
 gem 'rake'
 gem 'rack-test', group: %i(development test)
