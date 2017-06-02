@@ -26,6 +26,16 @@ BUCKET_PREFIX = {
 }
 
 RUNTIMES = {
+  'perl' => Runtime.new(
+    'travis-perl-archives',
+    'perl-builder',
+    'master',
+    'Perl/perl5',
+    'repos/Perl/perl5/tags',
+    nil,
+    'v',
+    'v(\d+)\.\d*[13579](\.\d+)(-RC\d+)?$'
+  ),
   'python' => Runtime.new(
     'travis-python-archives',
     'cpython-builder',
