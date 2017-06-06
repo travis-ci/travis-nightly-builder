@@ -233,7 +233,7 @@ task :build_latest_archives, [:runtime] do |_t, args|
         logger.info "latest_release=#{latest_release_version}"
         logger.info "VERSION=#{md[0]} ALIAS=#{md[:major_minor]}"
         rake_task_vars = "VERSION=#{md[0]}"
-        rake_task_vars += " ALIAS=#{md[:major_minor]}" unless md[:extra]
+        rake_task_vars += " ALIAS=#{md[:major_minor]}" if md[:major_minor]
         Rake::Task["build"].invoke(RUNTIMES[runtime].builder_repo, RUNTIMES[runtime].builder_branch, rake_task_vars)
         Rake::Task["build"].reenable
       end
