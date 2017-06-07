@@ -134,15 +134,16 @@ def version_regex(runtime)
   /^#{runtime}-(\d+(?:\.\d+)*.*)\.tar\.(gz|bz2)/
 end
 
-def latest_releases_for(runtime)
+def latest_releases_for(lang)
+  runtime = RUNTIMES.fetch lang
   conn = Faraday.new(url: 'https://api.github.com') do |f|
     f.use FaradayMiddleware::FollowRedirects, limit: 5
     f.use Faraday::Request::Authorization, 'Token', ENV['GITHUB_TOKEN'] if ENV['GITHUB_TOKEN']
     f.adapter Faraday.default_adapter
   end
 
-  logger.debug "url=#{RUNTIMES[runtime].api_path} runtime=#{RUNTIMES[runtime]}"
-  response = conn.get RUNTIMES[runtime].api_path
+  logger.debug "url=#{runtime.api_path} runtime=#{runtime}"
+  response = conn.get runtime.api_path
 
   unless response.success?
     logger.info "response=#{response.status}"
@@ -153,31 +154,31 @@ def latest_releases_for(runtime)
 
   if json_data.respond_to?(:key?) && json_data.key?("tree")
     defs = json_data["tree"].select do |obj|
-      obj["path"].match %r(^#{RUNTIMES[runtime].path}/#{RUNTIMES[runtime].prefix}\d)
+      obj["path"].match %r(^#{runtime.path}/#{runtime.prefix}\d)
     end
   else
     defs = json_data.select do |obj|
-      (obj["tag_name"] || obj["name"]).match %r(^#{RUNTIMES[runtime].prefix}\d)
+      (obj["tag_name"] || obj["name"]).match %r(^#{runtime.prefix}\d)
     end
   end
 
-  if RUNTIMES[runtime].except
-    defs.reject! {|obj| (obj["tag_name"] || obj["name"] || obj["path"] || '').match %r(#{RUNTIMES[runtime].except})}
+  if runtime.except
+    defs.reject! {|obj| (obj["tag_name"] || obj["name"] || obj["path"] || '').match %r(#{runtime.except})}
   end
 
   defs.sort! do |x,y|
     name1 = x.key?("path") && x["path"].split('/').last || x["tag_name"] || x["name"]
     name2 = y.key?("path") && y["path"].split('/').last || y["tag_name"] || y["name"]
 
-    vers1 = name1.match(%r(#{RUNTIMES[runtime].prefix}(\d+(\.\d+)?.*\z)))[1]
-    vers2 = name2.match(%r(#{RUNTIMES[runtime].prefix}(\d+(\.\d+)?.*\z)))[1]
+    vers1 = name1.match(%r(#{runtime.prefix}(\d+(\.\d+)?.*\z)))[1]
+    vers2 = name2.match(%r(#{runtime.prefix}(\d+(\.\d+)?.*\z)))[1]
 
     Gem::Version.new(vers1) <=> Gem::Version.new(vers2)
   end
 
   groups = defs.group_by do |x|
     name = x.key?("path") && x["path"].split('/').last || x["tag_name"] || x["name"]
-    name.match(%r(#{RUNTIMES[runtime].prefix}((\d+(\.\d))(\.\d)*.*\z)))[2]
+    name.match(%r(#{runtime.prefix}((\d+(\.\d))(\.\d)*.*\z)))[2]
   end
 
   groups.values.map(&:last).map do |x|
@@ -188,8 +189,8 @@ end
 def latest_archives_for(runtime)
   latest_versions = {}
 
-  stuff = SUPPORTED_OS['python'].map {|os| BUCKET_PREFIX[os]}.map do |prefix|
-    bucket = RUNTIMES[runtime].archive_bucket
+  stuff = SUPPORTED_OS.fetch(runtime).map {|os| BUCKET_PREFIX.fetch(os)}.map do |prefix|
+    bucket = RUNTIMES.fetch(runtime).archive_bucket
     archives = `aws s3 ls s3://#{bucket}/#{prefix} | awk '{print $NF}'`.split
 
     versions = archives.map do |archive|
@@ -217,7 +218,7 @@ end
 
 desc 'Build latest archives for language'
 task :build_latest_archives, [:runtime] do |_t, args|
-  runtime = args[:runtime]
+  runtime = RUNTIMES.fetch(args[:runtime])
 
   latest_releases ||= latest_releases_for(runtime)
   latest_archives ||= latest_archives_for(runtime)
@@ -229,12 +230,19 @@ task :build_latest_archives, [:runtime] do |_t, args|
 
     if md = v.match(/(?<major_minor>\d+\.\d+)(?<teeny>\.\d+)*(?<extra>.*)$/)
       latest_release_version = Gem::Version.new(md[0])
+      vers = md[0]
+      major_minor = md[:major_minor]
+      if !runtime.prefix.empty?
+        vers = runtime.prefix + vers
+        major_minor = runtime.prefix + major_minor
+      end
+
       if latest_archives.values.all? { |archive_version| latest_release_version > Gem::Version.new(archive_version) }
         logger.info "latest_release=#{latest_release_version}"
-        logger.info "VERSION=#{md[0]} ALIAS=#{md[:major_minor]}"
-        rake_task_vars = "VERSION=#{md[0]}"
-        rake_task_vars += " ALIAS=#{md[:major_minor]}" if md[:major_minor]
-        Rake::Task["build"].invoke(RUNTIMES[runtime].builder_repo, RUNTIMES[runtime].builder_branch, rake_task_vars)
+        logger.info "VERSION=#{vers} ALIAS=#{major_minor}"
+        rake_task_vars = "VERSION=#{vers}"
+        rake_task_vars += " ALIAS=#{major_minor}" if major_minor
+        Rake::Task["build"].invoke(runtime.builder_repo, runtime.builder_branch, rake_task_vars)
         Rake::Task["build"].reenable
       end
     end
@@ -244,7 +252,7 @@ task :build_latest_archives, [:runtime] do |_t, args|
     if latest_release = latest_releases.find {|v| v =~ /^#{major_minor}/}
       logger.info "latest_release=#{latest_release} latest_archive=#{latest_archives[major_minor]}"
       if Gem::Version.new(latest_release) > Gem::Version.new(latest_archives[major_minor])
-        Rake::Task["build"].invoke(RUNTIMES[runtime].builder_repo, RUNTIMES[runtime].builder_branch, "VERSION=#{latest_release} ALIAS=#{major_minor}")
+        Rake::Task["build"].invoke(runtime.builder_repo, runtime.builder_branch, "VERSION=#{latest_release} ALIAS=#{major_minor}")
         Rake::Task["build"].reenable
       end
     end
