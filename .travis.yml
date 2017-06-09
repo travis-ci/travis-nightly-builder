@@ -4,3 +4,34 @@ cache:
   bundler: true
 
 rvm: 2.3.0
+
+jobs:
+  include:
+    - stage: test
+      script: bundle exec rake spec
+    - stage: build
+      script: rake build[php-src-builder,default,'VERSION=master ALIAS=nightly ICU_RELEASE=57.1 ICU_INSTALL_DIR=$HOME/.phpenv/versions/$VERSION']
+    - stage: build
+      script: rake build[php-src-builder,default,'VERSION=7.0snapshot ALIAS=$VERSION ICU_RELEASE=57.1 ICU_INSTALL_DIR=$HOME/.phpenv/versions/$VERSION']
+    - stage: build
+      script: rake build[php-src-builder,default,'VERSION=7.1snapshot ALIAS=$VERSION ICU_RELEASE=57.1 ICU_INSTALL_DIR=$HOME/.phpenv/versions/$VERSION']
+    - stage: build
+      script: rake build[cpython-builder]
+    - stage: build
+      script: rake build[cpython-builder,default,VERSION=3.5-dev]
+    - stage: build
+      script: rake build[cpython-builder,default,VERSION=3.6-dev]
+    - stage: build
+      script: rake build[apt-whitelist-checker,run]
+    - stage: build
+      script: rake build['travis-rubies','build','RUBY=ruby-head']
+    - stage: build
+      script: rake build['travis-rubies','build','RUBY=jruby-head']
+    - stage: build
+      script: rake build['travis-rubies','build','RUBY=mruby-head']
+    - stage: build
+      script: rake build['travis-rubies','build','RUBY=ruby-head-clang']
+    - stage: build
+      script: rake build['cpython-builder','default','VERSION=pypy3-dev ALIAS=pypy3-nightly']
+    - stage: build
+      script: rake build['cpython-builder','default','VERSION=pypy-dev ALIAS=pypy-nightly']
