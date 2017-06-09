@@ -3,6 +3,8 @@ language: ruby
 cache:
   bundler: true
 
+dist: trusty
+
 rvm: 2.3.0
 
 jobs:
