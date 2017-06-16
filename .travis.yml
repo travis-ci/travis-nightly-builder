@@ -11,6 +11,7 @@ jobs:
   include:
     - stage: test
       script: bundle exec rake spec
+    - stage: build latest archives
       script: bundle exec rake build_latest_archives
     - stage: build
       script: bundle exec rake build[apt-whitelist-checker,run]
