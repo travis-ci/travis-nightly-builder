@@ -12,8 +12,7 @@ require 'rubygems'
 require 'logger'
 require 'pp'
 require 'yaml'
-
-Runtime = Struct.new(:archive_bucket, :builder_repo, :builder_branch, :repo, :api_path, :path, :prefix, :except)
+require 'ostruct'
 
 BUCKET_PREFIX = {
   precise: 'binaries/ubuntu/12.04/x86_64/',
@@ -25,53 +24,76 @@ BUCKET_PREFIX = {
   sierra:        'binaries/osx/10.12/x86_64/',
 }
 
+LANGUAGES = [
+  'perl',
+  'python',
+  # 'pypy',
+  # 'pypy3.5',
+  'php',
+  # 'erlang',
+]
+
 RUNTIMES = {
-  'perl' => Runtime.new(
-    'travis-perl-archives',
-    'perl-builder',
-    'master',
-    'Perl/perl5',
-    'repos/Perl/perl5/tags',
-    nil,
-    'v',
-    'v(\d+)\.\d*[13579](\.\d+)(-RC\d+)?$'
+  'perl' => OpenStruct.new(
+    archive_bucket: 'travis-perl-archives',
+    builder_repo: 'perl-builder',
+    builder_branch: 'master',
+    repo: 'Perl/perl5',
+    api_path: 'repos/Perl/perl5/tags',
+    version_prefix: 'v',
+    except: 'v(\d+)\.\d*[13579](\.\d+)(-RC\d+)?$',
+    supported_major_minor: ['5.24'],
   ),
-  'python' => Runtime.new(
-    'travis-python-archives',
-    'cpython-builder',
-    'default',
-    'yyuu/pyenv',
-    "repos/yyuu/pyenv/git/trees/master?recursive=1",
-    'plugins/python-build/share/python-build',
-    '',
-    '-dev$'
+  'python' => OpenStruct.new(
+    archive_bucket: 'travis-python-archives',
+    builder_repo: 'cpython-builder',
+    builder_branch: 'default',
+    repo: 'pyenv/pyenv',
+    api_path: "repos/pyenv/pyenv/git/trees/master?recursive=1",
+    path: 'plugins/python-build/share/python-build',
+    version_prefix: '',
+    except: '-dev$',
+    supported_major_minor: %w(2.7 3.5 3.6),
   ),
-  'pypy'   => Runtime.new(
-    'travis-python-archives',
-    'cpython-builder',
-    'default',
-    'yyuu/pyenv',
-    "repos/yyuu/pyenv/git/trees/master?recursive=1",
-    'plugins/python-build/share/python-build',
-    'pypy-'
+  'pypy'   => OpenStruct.new(
+    archive_bucket: 'travis-python-archives',
+    builder_repo: 'cpython-builder',
+    builder_branch: 'default',
+    repo: 'pyenv/pyenv',
+    api_path: "repos/pyenv/pyenv/git/trees/master?recursive=1",
+    path: 'plugins/python-build/share/python-build',
+    version_prefix: 'pypy-',
+    supported_major_minor: [],
   ),
-  'php'    => Runtime.new(
-    'travis-php-archives',
-    'php-src-builder',
-    'default',
-    'php-build/php-build',
-    "repos/php-build/php-build/git/trees/master?recursive=1",
-    'share/php-build/definitions',
-    ''
+  'pypy3.5'   => OpenStruct.new(
+    archive_bucket: 'travis-python-archives',
+    builder_repo: 'cpython-builder',
+    builder_branch: 'default',
+    repo: 'pyenv/pyenv',
+    api_path: "repos/pyenv/pyenv/git/trees/master?recursive=1",
+    path: 'plugins/python-build/share/python-build',
+    version_prefix: 'pypy3.5-',
+    except: '-(alpha|beta)\d*(-src)?',
+    supported_major_minor: [],
   ),
-  'erlang' => Runtime.new(
-    'travis-otp-releases',
-    'travis-erlang-builder',
-    'master',
-    'erlang/otp',
-    'repos/erlang/otp/tags',
-    nil, # path
-    'OTP[-_]'
+  'php'    => OpenStruct.new(
+    archive_bucket: 'travis-php-archives',
+    builder_repo: 'php-src-builder',
+    builder_branch: 'default',
+    repo: 'php-build/php-build',
+    api_path: "repos/php-build/php-build/git/trees/master?recursive=1",
+    path: 'share/php-build/definitions',
+    version_prefix: '',
+    supported_major_minor: %w(5.6 7.0 7.1),
+  ),
+  'erlang' => OpenStruct.new(
+    archive_bucket: 'travis-otp-releases',
+    builder_repo: 'travis-erlang-builder',
+    builder_branch: 'master',
+    repo: 'erlang/otp',
+    api_path: 'repos/erlang/otp/tags',
+    version_prefix: 'OTP[-_]',
+    supported_major_minor: [],
   ),
 }
 
@@ -79,6 +101,7 @@ SUPPORTED_OS = {
   'perl'   => %i(precise trusty),
   'python' => %i(precise trusty),
   'pypy'   => %i(precise trusty),
+  'pypy3.5'   => %i(precise trusty),
   'php'    => %i(precise trusty),
   'erlang' => %i(precise trusty),
 }
@@ -152,13 +175,15 @@ def latest_releases_for(lang)
 
   json_data = JSON.load(response.body)
 
+  logger.debug "json_data=#{json_data}"
+
   if json_data.respond_to?(:key?) && json_data.key?("tree")
     defs = json_data["tree"].select do |obj|
-      obj["path"].match %r(^#{runtime.path}/#{runtime.prefix}\d)
+      obj["path"].match %r(^#{runtime.path}/#{runtime.version_prefix}\d)
     end
   else
     defs = json_data.select do |obj|
-      (obj["tag_name"] || obj["name"]).match %r(^#{runtime.prefix}\d)
+      (obj["tag_name"] || obj["name"]).match %r(^#{runtime.version_prefix}\d)
     end
   end
 
@@ -166,23 +191,21 @@ def latest_releases_for(lang)
     defs.reject! {|obj| (obj["tag_name"] || obj["name"] || obj["path"] || '').match %r(#{runtime.except})}
   end
 
-  defs.sort! do |x,y|
-    name1 = x.key?("path") && x["path"].split('/').last || x["tag_name"] || x["name"]
-    name2 = y.key?("path") && y["path"].split('/').last || y["tag_name"] || y["name"]
+  logger.debug "defs=#{defs}"
 
-    vers1 = name1.match(%r(#{runtime.prefix}(\d+(\.\d+)?.*\z)))[1]
-    vers2 = name2.match(%r(#{runtime.prefix}(\d+(\.\d+)?.*\z)))[1]
+  defs.sort! do |x,y|
+    name1 = release_name(x)
+    name2 = release_name(y)
+
+    vers1 = name1.match(%r(#{runtime.version_prefix}(\d+(\.\d+)?.*\z)))[1]
+    vers2 = name2.match(%r(#{runtime.version_prefix}(\d+(\.\d+)?.*\z)))[1]
 
     Gem::Version.new(vers1) <=> Gem::Version.new(vers2)
   end
 
   groups = defs.group_by do |x|
-    name = x.key?("path") && x["path"].split('/').last || x["tag_name"] || x["name"]
-    name.match(%r(#{runtime.prefix}((\d+(\.\d))(\.\d)*.*\z)))[2]
-  end
-
-  groups.values.map(&:last).map do |x|
-    x.key?("path") && x["path"].split('/').last || x["tag_name"] || x["name"]
+    name = release_name(x)
+    name.match(%r(#{runtime.version_prefix}((\d+(\.\d+))(\.\d+)*.*\z)))[2]
   end
 end
 
@@ -209,6 +232,10 @@ def latest_archives_for(runtime)
   latest_versions
 end
 
+def release_name(release)
+  release.key?("path") && release["path"].split('/').last || release["tag_name"] || release["name"]
+end
+
 desc 'Ensure "aws" CLI client is available'
 task :ensure_aws do
   unless `command -v aws >& /dev/null`
@@ -217,44 +244,48 @@ task :ensure_aws do
 end
 
 desc 'Build latest archives for language'
-task :build_latest_archives, [:runtime] do |_t, args|
-  runtime = RUNTIMES.fetch(args[:runtime])
+task :build_latest_archives do |_t, args|
+  LANGUAGES.each do |lang|
+    logger.info "Building latest archives for #{lang}"
+    runtime = RUNTIMES.fetch(lang)
 
-  latest_releases ||= latest_releases_for(runtime)
-  latest_archives ||= latest_archives_for(runtime)
-  logger.info "latest_release=#{latest_releases}"
-  logger.info "latest_archives=#{latest_archives}"
+    latest_releases ||= latest_releases_for(lang)
+    latest_archives ||= latest_archives_for(lang)
 
-  latest_releases.each do |v|
-    next unless v.match(/\d+(\.\d+)*/)
-
-    if md = v.match(/(?<major_minor>\d+\.\d+)(?<teeny>\.\d+)*(?<extra>.*)$/)
-      latest_release_version = Gem::Version.new(md[0])
-      vers = md[0]
-      major_minor = md[:major_minor]
-      if !runtime.prefix.empty?
-        vers = runtime.prefix + vers
-        major_minor = runtime.prefix + major_minor
-      end
-
-      if latest_archives.values.all? { |archive_version| latest_release_version > Gem::Version.new(archive_version) }
-        logger.info "latest_release=#{latest_release_version}"
-        logger.info "VERSION=#{vers} ALIAS=#{major_minor}"
-        rake_task_vars = "VERSION=#{vers}"
-        rake_task_vars += " ALIAS=#{major_minor}" if major_minor
-        Rake::Task["build"].invoke(runtime.builder_repo, runtime.builder_branch, rake_task_vars)
-        Rake::Task["build"].reenable
-      end
+    latest_supported_releases = latest_releases.select do |major_minor, releases|
+      runtime.supported_major_minor.any? { |supported| major_minor.start_with? supported }
     end
-  end
 
-  latest_archives.each do |major_minor, version|
-    if latest_release = latest_releases.find {|v| v =~ /^#{major_minor}/}
-      logger.info "latest_release=#{latest_release} latest_archive=#{latest_archives[major_minor]}"
-      if Gem::Version.new(latest_release) > Gem::Version.new(latest_archives[major_minor])
-        Rake::Task["build"].invoke(runtime.builder_repo, runtime.builder_branch, "VERSION=#{latest_release} ALIAS=#{major_minor}")
-        Rake::Task["build"].reenable
+    logger.debug "latest_releases=#{latest_releases}"
+    logger.debug "latest_supported_releases=#{latest_supported_releases}"
+
+    exit if latest_supported_releases.empty?
+
+    runtime.supported_major_minor.each do |major_minor|
+      latest_supported_release = latest_supported_releases[major_minor].last
+      vers = latest_release_name = release_name(latest_supported_release)
+
+      if runtime.version_prefix && !runtime.version_prefix.empty?
+        md = /^(?<version_prefix>#{runtime.version_prefix})(?<vers>\d+(\.\d+)*)/.match(latest_release_name)
+        vers = md[:vers]
+        latest_release_name = runtime.version_prefix + vers
       end
+
+      if Gem::Version.new(latest_archives[major_minor]) >= Gem::Version.new(vers)
+        logger.info "#{lang} #{major_minor} is up to date (#{vers})"
+        next
+      end
+
+      vers = release_name(latest_releases[major_minor].last)
+      rake_task_vars = "VERSION=#{vers}"
+      rake_task_vars += " ALIAS=#{major_minor}"
+
+      logger.info "vers=#{vers}"
+      logger.info "latest_release_name=#{latest_release_name}"
+      logger.info "rake_task_vars=#{rake_task_vars}"
+
+      Rake::Task["build"].invoke(runtime.builder_repo, runtime.builder_branch, rake_task_vars)
+      Rake::Task["build"].reenable
     end
   end
 end
