@@ -245,7 +245,7 @@ end
 desc 'Ensure "aws" CLI client is available'
 task :ensure_aws do
   unless `command -v aws >& /dev/null`
-    system "pip install aws"
+    sh "pip install aws"
   end
 end
 
