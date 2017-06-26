@@ -242,15 +242,8 @@ def release_name(release)
   name = release.key?("path") && release["path"].split('/').last || release["tag_name"] || release["name"]
 end
 
-desc 'Ensure "aws" CLI client is available'
-task :ensure_aws do
-  unless `command -v aws >& /dev/null`
-    sh "pip install awscli --user"
-  end
-end
-
 desc 'Build latest archives for language'
-task :build_latest_archives =>[:ensure_aws] do |_t, args|
+task :build_latest_archives do |_t, args|
   LANGUAGES.each do |lang|
     logger.info "Building latest archives for #{lang}"
     runtime = RUNTIMES.fetch(lang)
