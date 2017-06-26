@@ -30,7 +30,7 @@ LANGUAGES = [
   # 'pypy',
   # 'pypy3.5',
   'php',
-  # 'erlang',
+  'erlang',
 ]
 
 RUNTIMES = {
@@ -52,7 +52,7 @@ RUNTIMES = {
     api_path: "repos/pyenv/pyenv/git/trees/master?recursive=1",
     path: 'plugins/python-build/share/python-build',
     version_prefix: '',
-    except: '-dev$',
+    except: '(-dev|rc\d+)$',
     supported_major_minor: %w(2.7 3.5 3.6),
   ),
   'pypy'   => OpenStruct.new(
@@ -93,7 +93,9 @@ RUNTIMES = {
     repo: 'erlang/otp',
     api_path: 'repos/erlang/otp/tags',
     version_prefix: 'OTP[-_]',
-    supported_major_minor: [],
+    supported_major_minor: ['19.3', '20.0'],
+    pass_through_release_name: true,
+    skip_matching_alias: true
   ),
 }
 
@@ -217,12 +219,16 @@ def latest_archives_for(runtime)
     archives = `aws s3 ls s3://#{bucket}/#{prefix} | awk '{print $NF}'`.split
 
     versions = archives.map do |archive|
-      md = archive.match /^#{runtime}-(?<version>\d+(\.\d+)(\.\d+)+)\.tar\.bz2/
+      if RUNTIMES.fetch(runtime).skip_matching_alias
+        md = archive.match /^#{runtime}-(?<version>\d+(\.\d+)(\.\d+)*)\.tar\.bz2/
+      else
+        md = archive.match /^#{runtime}-(?<version>\d+(\.\d+)(\.\d+)+)\.tar\.bz2/
+      end
       md && md[:version]
     end.compact
 
     # group by MAJOR.MINOR
-    version_groups = versions.group_by {|v| v.match(/^(\d+\.\d+)(\.\d+)+/)[1] }
+    version_groups = versions.group_by {|v| RUNTIMES.fetch(runtime).skip_matching_alias ? v.match(/^(\d+\.\d+)(\.\d+)*/)[1] : v.match(/^(\d+\.\d+)(\.\d+)+/)[1] }
 
     version_groups.each do |v, versions|
       latest_versions[v] = versions.sort { |a,b| Gem::Version.new(a) <=> Gem::Version.new(b) }.last
@@ -233,7 +239,7 @@ def latest_archives_for(runtime)
 end
 
 def release_name(release)
-  release.key?("path") && release["path"].split('/').last || release["tag_name"] || release["name"]
+  name = release.key?("path") && release["path"].split('/').last || release["tag_name"] || release["name"]
 end
 
 desc 'Ensure "aws" CLI client is available'
@@ -265,18 +271,28 @@ task :build_latest_archives do |_t, args|
       latest_supported_release = latest_supported_releases[major_minor].last
       vers = latest_release_name = release_name(latest_supported_release)
 
+      logger.debug "latest_supported_release=#{latest_supported_release}"
+      logger.debug "vers=#{vers}"
+
       if runtime.version_prefix && !runtime.version_prefix.empty?
         md = /^(?<version_prefix>#{runtime.version_prefix})(?<vers>\d+(\.\d+)*)/.match(latest_release_name)
         vers = md[:vers]
         latest_release_name = runtime.version_prefix + vers
       end
 
+      unless runtime.pass_through_release_name
+        md = /^(?<version_prefix>#{runtime.version_prefix})(?<vers>\d+(\.\d+)*)/.match(release_name(latest_releases[major_minor].last))
+        vers = md[:vers]
+      end
+
+      logger.info "latest_archives[major_minor]=#{latest_archives[major_minor]}"
+      logger.info "vers=#{vers}"
+
       if Gem::Version.new(latest_archives[major_minor]) >= Gem::Version.new(vers)
         logger.info "#{lang} #{major_minor} is up to date (#{vers})"
         next
       end
 
-      vers = release_name(latest_releases[major_minor].last)
       rake_task_vars = "VERSION=#{vers}"
       rake_task_vars += " ALIAS=#{major_minor}"
 
