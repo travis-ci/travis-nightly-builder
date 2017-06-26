@@ -218,6 +218,8 @@ def latest_archives_for(runtime)
     bucket = RUNTIMES.fetch(runtime).archive_bucket
     archives = `aws s3 ls s3://#{bucket}/#{prefix} | awk '{print $NF}'`.split
 
+    fail "Could not fetch archives list for #{runtime}" if archives.empty?
+
     versions = archives.map do |archive|
       if RUNTIMES.fetch(runtime).skip_matching_alias
         md = archive.match /^#{runtime}-(?<version>\d+(\.\d+)(\.\d+)*)\.tar\.bz2/
