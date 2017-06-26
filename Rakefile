@@ -250,7 +250,7 @@ task :ensure_aws do
 end
 
 desc 'Build latest archives for language'
-task :build_latest_archives do |_t, args|
+task :build_latest_archives, [:ensure_aws] do |_t, args|
   LANGUAGES.each do |lang|
     logger.info "Building latest archives for #{lang}"
     runtime = RUNTIMES.fetch(lang)
