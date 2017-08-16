@@ -263,7 +263,7 @@ task :build_latest_archives do |_t, args|
     exit if latest_supported_releases.empty?
 
     runtime.supported_major_minor.each do |major_minor|
-      return unless latest_supported_releases[major_minor]
+      next unless latest_supported_releases[major_minor]
 
       latest_supported_release = latest_supported_releases[major_minor].last
       vers = latest_release_name = release_name(latest_supported_release)
