@@ -31,6 +31,7 @@ LANGUAGES = [
   # 'pypy3.5',
   'php',
   'erlang',
+  'ruby',
 ]
 
 RUNTIMES = {
@@ -97,6 +98,18 @@ RUNTIMES = {
     pass_through_release_name: true,
     skip_matching_alias: true
   ),
+  'ruby' => OpenStruct.new(
+    archive_bucket: 'travis-rubies',
+    builder_repo: 'travis-rubies',
+    builder_branch: 'build',
+    repo: 'ruby/ruby',
+    api_path: 'repos/ruby/ruby/tags',
+    version_prefix: 'v',
+    supported_major_minor: ['2.2', '2.3', '2.4'],
+    pass_through_release_name: true,
+    skip_matching_alias: true,
+    release_transformer: -> before { before.gsub('_', '.') },
+  ),
 }
 
 SUPPORTED_OS = {
@@ -106,6 +119,7 @@ SUPPORTED_OS = {
   'pypy3.5'   => %i(precise trusty),
   'php'    => %i(precise trusty),
   'erlang' => %i(precise trusty),
+  'ruby' => %i(precise trusty),
 }
 
 RuboCop::RakeTask.new if defined?(RuboCop)
@@ -195,9 +209,15 @@ def latest_releases_for(lang)
 
   logger.debug "defs=#{defs}"
 
+  transformer = runtime.release_transformer
+
   defs.sort! do |x,y|
     name1 = release_name(x)
     name2 = release_name(y)
+    if transformer
+      name1 = transformer.call(name1)
+      name2 = transformer.call(name2)
+    end
 
     vers1 = name1.match(%r(#{runtime.version_prefix}(\d+(\.\d+)?.*\z)))[1]
     vers2 = name2.match(%r(#{runtime.version_prefix}(\d+(\.\d+)?.*\z)))[1]
@@ -205,9 +225,18 @@ def latest_releases_for(lang)
     Gem::Version.new(vers1) <=> Gem::Version.new(vers2)
   end
 
+  if transformer
+    defs.map! do |entity|
+      entity["name"] = transformer.call(entity["name"])
+      entity
+    end
+  end
+
+  logger.debug "defs_after=#{defs}"
+
   groups = defs.group_by do |x|
     name = release_name(x)
-    name.match(%r(#{runtime.version_prefix}((\d+(\.\d+))(\.\d+)*.*\z)))[2]
+    name.match(%r(#{runtime.version_prefix}((\d+(([\._])\d+))(\4\d+)*.*\z)))[2]
   end
 end
 
@@ -290,8 +319,13 @@ task :build_latest_archives do |_t, args|
         next
       end
 
-      rake_task_vars = "VERSION=#{vers}"
-      rake_task_vars += " ALIAS=#{major_minor}"
+      case lang
+      when 'ruby'
+        rake_task_vars = " RUBY=#{vers}"
+      else
+        rake_task_vars = "VERSION=#{vers}"
+        rake_task_vars += " ALIAS=#{major_minor}"
+      end
 
       logger.info "vers=#{vers}"
       logger.info "latest_release_name=#{latest_release_name}"
