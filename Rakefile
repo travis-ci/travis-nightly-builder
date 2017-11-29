@@ -22,6 +22,7 @@ BUCKET_PREFIX = {
   yosemite:      'binaries/osx/10.10/x86_64/',
   el_capitan:    'binaries/osx/10.11/x86_64/',
   sierra:        'binaries/osx/10.12/x86_64/',
+  high_sierra:   'binaries/osx/10.13/x86_64/',
 }
 
 LANGUAGES = [
