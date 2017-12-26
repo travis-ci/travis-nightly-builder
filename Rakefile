@@ -106,7 +106,7 @@ RUNTIMES = {
     repo: 'ruby/ruby',
     api_path: 'repos/ruby/ruby/tags',
     version_prefix: 'v',
-    supported_major_minor: ['2.2', '2.3', '2.4'],
+    supported_major_minor: ['2.2', '2.3', '2.4', '2.5'],
     pass_through_release_name: true,
     skip_matching_alias: true,
     release_transformer: -> before { before.gsub('_', '.') },
