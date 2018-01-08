@@ -64,7 +64,7 @@ RUNTIMES = {
     repo: 'pyenv/pyenv',
     api_path: "repos/pyenv/pyenv/git/trees/master?recursive=1",
     path: 'plugins/python-build/share/python-build',
-    version_prefix: 'pypy-',
+    version_prefix: 'pypy2.7-',
     except: '(-(alpha|beta)\d*|-src)$',
     supported_major_minor: %w(5.9 5.10),
   ),
@@ -291,7 +291,7 @@ task :build_latest_archives do |_t, args|
     logger.debug "latest_releases=#{latest_releases}"
     logger.debug "latest_supported_releases=#{latest_supported_releases}"
 
-    exit if latest_supported_releases.empty?
+    next if latest_supported_releases.empty?
 
     runtime.supported_major_minor.each do |major_minor|
       next unless latest_supported_releases[major_minor]
@@ -324,6 +324,9 @@ task :build_latest_archives do |_t, args|
       case lang
       when 'ruby'
         rake_task_vars = " RUBY=#{vers}"
+      when /^pypy/
+        rake_task_vars = "VERSION=#{lang}-#{vers}"
+        rake_task_vars += " ALIAS=#{major_minor}"
       else
         rake_task_vars = "VERSION=#{vers}"
         rake_task_vars += " ALIAS=#{major_minor}"
