@@ -28,8 +28,8 @@ BUCKET_PREFIX = {
 LANGUAGES = [
   'perl',
   'python',
-  # 'pypy',
-  # 'pypy3.5',
+  'pypy2.7',
+  'pypy3.5',
   'php',
   'erlang',
   'ruby',
@@ -57,7 +57,7 @@ RUNTIMES = {
     except: '(-dev|rc\d+)$',
     supported_major_minor: %w(2.7 3.5 3.6),
   ),
-  'pypy'   => OpenStruct.new(
+  'pypy2.7'   => OpenStruct.new(
     archive_bucket: 'travis-python-archives',
     builder_repo: 'cpython-builder',
     builder_branch: 'default',
@@ -65,7 +65,8 @@ RUNTIMES = {
     api_path: "repos/pyenv/pyenv/git/trees/master?recursive=1",
     path: 'plugins/python-build/share/python-build',
     version_prefix: 'pypy-',
-    supported_major_minor: [],
+    except: '(-(alpha|beta)\d*|-src)$',
+    supported_major_minor: %w(5.9 5.10),
   ),
   'pypy3.5'   => OpenStruct.new(
     archive_bucket: 'travis-python-archives',
@@ -75,8 +76,8 @@ RUNTIMES = {
     api_path: "repos/pyenv/pyenv/git/trees/master?recursive=1",
     path: 'plugins/python-build/share/python-build',
     version_prefix: 'pypy3.5-',
-    except: '-(alpha|beta)\d*(-src)?',
-    supported_major_minor: [],
+    except: '(-(alpha|beta)\d*|-src)$',
+    supported_major_minor: %w(5.9 5.10),
   ),
   'php'    => OpenStruct.new(
     archive_bucket: 'travis-php-archives',
