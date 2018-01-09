@@ -326,7 +326,7 @@ task :build_latest_archives do |_t, args|
         rake_task_vars = " RUBY=#{vers}"
       when /^pypy/
         rake_task_vars = "VERSION=#{lang}-#{vers}"
-        rake_task_vars += " ALIAS=#{major_minor}"
+        rake_task_vars += " ALIAS=#{lang}-#{major_minor}"
       else
         rake_task_vars = "VERSION=#{vers}"
         rake_task_vars += " ALIAS=#{major_minor}"
