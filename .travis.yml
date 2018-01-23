@@ -10,7 +10,7 @@ before_install:
 
 stages:
   - test
-  - buld latest archives
+  - build latest archives
   - PHP
   - Python
   - Ruby
