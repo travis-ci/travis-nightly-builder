@@ -127,6 +127,7 @@ RUNTIMES = {
 
 SUPPORTED_OS = {
   'perl'   => %i(precise trusty),
+  'perl-extras'   => %i(precise trusty),
   'python' => %i(precise trusty),
   'pypy2.7'   => %i(precise trusty),
   'pypy3.5'   => %i(precise trusty),
