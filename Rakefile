@@ -27,6 +27,7 @@ BUCKET_PREFIX = {
 
 LANGUAGES = [
   'perl',
+  'perl-extras',
   'python',
   'pypy2.7',
   'pypy3.5',
@@ -37,6 +38,16 @@ LANGUAGES = [
 
 RUNTIMES = {
   'perl' => OpenStruct.new(
+    archive_bucket: 'travis-perl-archives',
+    builder_repo: 'perl-builder',
+    builder_branch: 'master',
+    repo: 'Perl/perl5',
+    api_path: 'repos/Perl/perl5/tags',
+    version_prefix: 'v',
+    except: 'v(\d+)\.\d*[13579](\.\d+)(-RC\d+)?$',
+    supported_major_minor: %w(5.24 5.26),
+  ),
+  'perl-extras' => OpenStruct.new(
     archive_bucket: 'travis-perl-archives',
     builder_repo: 'perl-builder',
     builder_branch: 'master',
@@ -255,7 +266,12 @@ def latest_archives_for(runtime)
       if RUNTIMES.fetch(runtime).skip_matching_alias
         md = archive.match /^#{runtime}-(?<version>\d+(\.\d+)(\.\d+)*)\.tar\.bz2/
       else
-        md = archive.match /^#{runtime}-(?<version>\d+(\.\d+)(\.\d+)+)\.tar\.bz2/
+        case runtime
+        when /extras$/
+          md = archive.match /^#{runtime}-(?<version>\d+(\.\d+)(\.\d+)+)-extras\.tar\.bz2/
+        else
+          md = archive.match /^#{runtime}-(?<version>\d+(\.\d+)(\.\d+)+)\.tar\.bz2/
+        end
       end
       md && md[:version]
     end.compact
@@ -327,7 +343,9 @@ task :build_latest_archives do |_t, args|
       when /^pypy/
         rake_task_vars = "VERSION=#{lang}-#{vers}"
         rake_task_vars += " ALIAS=#{lang}-#{major_minor}"
-      else
+      when "perl-extras"
+        rake_task_vars = "VERSION=perl-#{vers} NAME=#{major_minor}-extras ALIAS=#{major_minor}-shrlibs ARGS='-Duseshrplib -Duseithreads'"
+     else
         rake_task_vars = "VERSION=#{vers}"
         rake_task_vars += " ALIAS=#{major_minor}"
       end
