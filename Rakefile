@@ -44,7 +44,7 @@ RUNTIMES = {
     api_path: 'repos/Perl/perl5/tags',
     version_prefix: 'v',
     except: 'v(\d+)\.\d*[13579](\.\d+)(-RC\d+)?$',
-    supported_major_minor: ['5.24'],
+    supported_major_minor: %w(5.24 5.26),
   ),
   'python' => OpenStruct.new(
     archive_bucket: 'travis-python-archives',
