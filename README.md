@@ -43,7 +43,7 @@ The task needs `VERSION=…` set, or else it will fail.
 Builds OTP Release
 
 ```sh-session
-$ rake build['travis-erlang-builder','master','ERLANG_VERSION=19.0']
+$ rake build['travis-erlang-builder','master','VERSION=19.0']
 ```
 
 ### [perl-builder](https://github.com/travis-ci/perl-builder)
