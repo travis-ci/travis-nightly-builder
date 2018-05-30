@@ -333,7 +333,7 @@ task :build_latest_archives do |_t, args|
       logger.info "latest_archives[major_minor]=#{latest_archives[major_minor]}"
       logger.info "vers=#{vers}"
 
-      if Gem::Version.new(latest_archives[major_minor]) >= Gem::Version.new(vers)
+      if Gem::Version.new(latest_archives.fetch(major_minor, '')) >= Gem::Version.new(vers)
         logger.info "#{lang} #{major_minor} is up to date (#{vers})"
         next
       end
