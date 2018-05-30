@@ -345,7 +345,7 @@ task :build_latest_archives do |_t, args|
         rake_task_vars = "VERSION=#{lang}-#{vers}"
         rake_task_vars += " ALIAS=#{lang}-#{major_minor}"
       when "perl-extras"
-        rake_task_vars = "VERSION=#{vers} NAME=#{major_minor}-extras ALIAS=#{major_minor}-shrplib ARGS='-Duseshrplib -Duseithreads'"
+        rake_task_vars = "VERSION=#{vers} NAME=#{vers}-extras ALIAS='#{vers}-shrplib #{major_minor}-shrplib #{major_minor}-shrplib' ARGS='-Duseshrplib -Duseithreads'"
       when 'erlang'
         rake_task_vars = "VERSION=#{vers}"
       else
