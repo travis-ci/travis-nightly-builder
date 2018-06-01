@@ -39,3 +39,10 @@ jobs:
     - script: bundle exec rake build['travis-rubies','build','RUBY=jruby-head']
     - script: bundle exec rake build['travis-rubies','build','RUBY=mruby-head']
     - script: bundle exec rake build['travis-rubies','build','RUBY=ruby-head-clang']
+
+notifications:
+  slack:
+    rooms:
+      - secure: "RdlCed6EWIMuC2i1lPUW4wGW5P9pqsIM14YRoWSfFBlXr7WDZL3sAR5h1X1N3Xj0nTXKwvSTMAPG2Kut6aBXy3xothPD8FzrwnzPOqGlCNCR5LOUeG55yxS3mFNyI1VAh3xKKOh+u0hNQFa+j/9wGNeysceeO5kHclyhmyja6gVr/vWQw2XjIXnLklZR8eEn1qzk0pGIDl252T/URCVBJaKd4cgEFxfgkt+YnKqXUJTC5mnRUgG0C05W0VnkAWk+NssLX8Yiy9F/f4apc7jZH9LrNelTusZP+HzKflLZFRfAUBpZmWuz5wRTFUM/6X6sZFwoop7jswaNhc8PIdNJPaezmc8s24KZYv/2YpgjPwA94E9CUhfneCVwS4o7A29uEDimd0EgbcPm/5JoSKg4E2MGwJhGibLXC3bJo6rikGb4uBoGUU3ActyWjL3Gnbq44hwYc85wZfegoNB2ibarpPS9WjsHbRyLg/fxF3DxMrP36TiCXcX8k4UkchcPw+FsUSkj/BUoM/UQK+F8AToCLFJLa3Lsz92IQgEL0l7xV98/rt1rAm54fjEme5hFMihGmAy9aB5ykRSUosrcKjCtFOq2fkIYSOoZa/9FsB12q9FpahALFPNA0xDKekwpcqqf+8pUiiOYY8UzMkKbdI/jXp9dRIq93GrumZOqMrZPMPw="
+    on_success: never
+    on_failure: always
