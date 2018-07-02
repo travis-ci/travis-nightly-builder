@@ -126,14 +126,14 @@ RUNTIMES = {
 }
 
 SUPPORTED_OS = {
-  'perl'   => %i(precise trusty xenial),
-  'perl-extras'   => %i(precise trusty xenial),
-  'python' => %i(precise trusty xenial),
-  'pypy2.7'   => %i(precise trusty xenial),
-  'pypy3.5'   => %i(precise trusty xenial),
-  'php'    => %i(precise trusty xenial),
-  'erlang' => %i(precise trusty xenial),
-  'ruby' => %i(precise trusty xenial),
+  'perl'   => %i(precise trusty),
+  'perl-extras'   => %i(precise trusty),
+  'python' => %i(precise trusty),
+  'pypy2.7'   => %i(precise trusty),
+  'pypy3.5'   => %i(precise trusty),
+  'php'    => %i(precise trusty),
+  'erlang' => %i(precise trusty),
+  'ruby' => %i(precise trusty),
 }
 
 RuboCop::RakeTask.new if defined?(RuboCop)
