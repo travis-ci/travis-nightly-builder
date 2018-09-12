@@ -12,3 +12,4 @@ gem 'simplecov', group: %i(development test)
 gem 'sinatra'
 gem 'sinatra-contrib'
 gem 'sinatra-param'
+gem 'pry'
