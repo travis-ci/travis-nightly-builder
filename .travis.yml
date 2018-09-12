@@ -27,6 +27,7 @@ jobs:
     - script: bundle exec rake build[php-src-builder,default,'VERSION=7.0snapshot ALIAS=$VERSION ICU_RELEASE=59.1 ICU_INSTALL_DIR=$HOME/.phpenv/versions/$VERSION']
     - script: bundle exec rake build[php-src-builder,default,'VERSION=7.1snapshot ALIAS=$VERSION ICU_RELEASE=59.1 ICU_INSTALL_DIR=$HOME/.phpenv/versions/$VERSION']
     - script: bundle exec rake build[php-src-builder,default,'VERSION=7.2snapshot ALIAS=$VERSION ICU_RELEASE=59.1 ICU_INSTALL_DIR=$HOME/.phpenv/versions/$VERSION']
+    - script: bundle exec rake build[php-src-builder,default,'VERSION=7.3snapshot ALIAS=$VERSION ICU_RELEASE=59.1 ICU_INSTALL_DIR=$HOME/.phpenv/versions/$VERSION']
     - stage: Python
       script: bundle exec rake build['cpython-builder','default','VERSION=3.5-dev']
     - script: bundle exec rake build['cpython-builder','default','VERSION=3.6-dev']
