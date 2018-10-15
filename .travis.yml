@@ -21,7 +21,7 @@ jobs:
       script: bundle exec rake spec
     - stage: build latest archives
       script: bundle exec rake build_latest_archives
-    - script: bundle exec rake build[apt-whitelist-checker,run]
+#    - script: bundle exec rake build[apt-whitelist-checker,run]
     - stage: PHP
       script: bundle exec rake build[php-src-builder,default,'VERSION=master ALIAS=nightly ICU_RELEASE=59.1 ICU_INSTALL_DIR=$HOME/.phpenv/versions/$VERSION']
     - script: bundle exec rake build[php-src-builder,default,'VERSION=7.0snapshot ALIAS=$VERSION ICU_RELEASE=59.1 ICU_INSTALL_DIR=$HOME/.phpenv/versions/$VERSION']
