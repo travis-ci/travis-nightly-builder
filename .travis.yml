@@ -24,22 +24,35 @@ jobs:
 #    - script: bundle exec rake build[apt-whitelist-checker,run]
     - stage: PHP
       script: bundle exec rake build[php-src-builder,default,'VERSION=master ALIAS=nightly ICU_RELEASE=59.1 ICU_INSTALL_DIR=$HOME/.phpenv/versions/$VERSION']
-    - script: bundle exec rake build[php-src-builder,default,'VERSION=7.0snapshot ALIAS=$VERSION ICU_RELEASE=59.1 ICU_INSTALL_DIR=$HOME/.phpenv/versions/$VERSION']
+      name: nightly
     - script: bundle exec rake build[php-src-builder,default,'VERSION=7.1snapshot ALIAS=$VERSION ICU_RELEASE=59.1 ICU_INSTALL_DIR=$HOME/.phpenv/versions/$VERSION']
+      name: 7.1snapshot
     - script: bundle exec rake build[php-src-builder,default,'VERSION=7.2snapshot ALIAS=$VERSION ICU_RELEASE=59.1 ICU_INSTALL_DIR=$HOME/.phpenv/versions/$VERSION']
+      name: 7.2snapshot
     - script: bundle exec rake build[php-src-builder,default,'VERSION=7.3snapshot ALIAS=$VERSION ICU_RELEASE=59.1 ICU_INSTALL_DIR=$HOME/.phpenv/versions/$VERSION']
+      name: 7.3snapshot
     - stage: Python
       script: bundle exec rake build['cpython-builder','default','VERSION=3.5-dev']
+      name: 3.5-dev
     - script: bundle exec rake build['cpython-builder','default','VERSION=3.6-dev']
+      name: 3.6-dev
     - script: bundle exec rake build['cpython-builder','default','VERSION=3.7-dev']
+      name: 3.7-dev
     - script: bundle exec rake build['cpython-builder','default','VERSION=3.8-dev ALIAS=nightly']
+      name: 3.8-dev
     - script: bundle exec rake build['cpython-builder','default','VERSION=pypy3-dev ALIAS=pypy3-nightly']
+      name: pypy3-dev
     - script: bundle exec rake build['cpython-builder','default','VERSION=pypy-dev ALIAS=pypy-nightly']
+      name: pypy-dev
     - stage: Ruby
       script: bundle exec rake build['travis-rubies','build','RUBY=ruby-head']
+      name: ruby-head
     - script: bundle exec rake build['travis-rubies','build','RUBY=jruby-head']
+      name: jruby-head
     - script: bundle exec rake build['travis-rubies','build','RUBY=mruby-head']
+      name: mruby-head
     - script: bundle exec rake build['travis-rubies','build','RUBY=ruby-head-clang']
+      name: ruby-head-clang
 
 notifications:
   slack:
