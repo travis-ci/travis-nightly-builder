@@ -99,7 +99,7 @@ RUNTIMES = {
     api_path: "repos/php-build/php-build/git/trees/master?recursive=1",
     path: 'share/php-build/definitions',
     version_prefix: '',
-    supported_major_minor: %w(5.6 7.0 7.1 7.2),
+    supported_major_minor: %w(5.6 7.0 7.1 7.2 7.3),
   ),
   'erlang' => OpenStruct.new(
     archive_bucket: 'travis-otp-releases',
