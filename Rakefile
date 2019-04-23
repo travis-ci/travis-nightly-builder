@@ -358,8 +358,8 @@ task :build_latest_archives do |_t, args|
       when /^pypy/
         rake_task_vars = "VERSION=#{lang}-#{vers}"
         if major_minor == runtime.supported_major_minor.last
-          alias = lang.start_with? ("pypy3") ? 'pypy3' : lang
-          rake_task_vars += " ALIAS=#{alias}"
+          alias_ = lang.start_with? ("pypy3") ? 'pypy3' : lang
+          rake_task_vars += " ALIAS=#{alias_}"
         end
       when "perl-extras"
         rake_task_vars = "VERSION=#{vers} NAME=#{vers}-extras ALIAS='#{vers}-shrplib #{major_minor}-shrplib #{major_minor}-shrplib' ARGS='-Duseshrplib -Duseithreads'"
