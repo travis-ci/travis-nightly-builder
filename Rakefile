@@ -79,7 +79,7 @@ RUNTIMES = {
     path: 'plugins/python-build/share/python-build',
     version_prefix: 'pypy2.7-',
     except: '(-(alpha|beta)\d*|-src)$',
-    supported_major_minor: %w(5.9 5.10 6.0),
+    supported_major_minor: %w(5.9 5.10 6.0 7.0 7.1),
   ),
   'pypy3.5'   => OpenStruct.new(
     archive_bucket: 'travis-python-archives',
@@ -101,7 +101,7 @@ RUNTIMES = {
     path: 'plugins/python-build/share/python-build',
     version_prefix: 'pypy3.6-',
     except: '(-(alpha|beta)\d*|-src)$',
-    supported_major_minor: %w(7.1),
+    supported_major_minor: %w(7.0 7.1),
   ),
   'php'    => OpenStruct.new(
     archive_bucket: 'travis-php-archives',
@@ -357,7 +357,10 @@ task :build_latest_archives do |_t, args|
         rake_task_vars = " RUBY=#{vers}"
       when /^pypy/
         rake_task_vars = "VERSION=#{lang}-#{vers}"
-        rake_task_vars += " ALIAS=#{lang}-#{major_minor}"
+        if major_minor == runtime.supported_major_minor.last
+          alias = lang.start_with? ("pypy3") ? 'pypy3' : lang
+          rake_task_vars += " ALIAS=#{alias}"
+        end
       when "perl-extras"
         rake_task_vars = "VERSION=#{vers} NAME=#{vers}-extras ALIAS='#{vers}-shrplib #{major_minor}-shrplib #{major_minor}-shrplib' ARGS='-Duseshrplib -Duseithreads'"
       when 'erlang'
