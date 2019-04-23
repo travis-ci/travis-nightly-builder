@@ -144,6 +144,7 @@ SUPPORTED_OS = {
   'python' => %i(precise trusty xenial),
   'pypy2.7'   => %i(precise trusty xenial),
   'pypy3.5'   => %i(precise trusty xenial),
+  'pypy3.6'   => %i(trusty xenial),
   'php'    => %i(precise trusty xenial),
   'erlang' => %i(precise trusty xenial),
   'ruby' => %i(precise trusty xenial),
