@@ -18,6 +18,7 @@ BUCKET_PREFIX = {
   precise: 'binaries/ubuntu/12.04/x86_64/',
   trusty:  'binaries/ubuntu/14.04/x86_64/',
   xenial:  'binaries/ubuntu/16.04/x86_64/',
+  bionic:  'binaries/ubuntu/18.04/x86_64/',
   mountain_lion: 'binaries/osx/10.8/x86_64/',
   mavericks:     'binaries/osx/10.9/x86_64/',
   yosemite:      'binaries/osx/10.10/x86_64/',
@@ -139,15 +140,15 @@ RUNTIMES = {
 }
 
 SUPPORTED_OS = {
-  'perl'   => %i(precise trusty xenial),
-  'perl-extras'   => %i(precise trusty xenial),
-  'python' => %i(precise trusty xenial),
-  'pypy2.7'   => %i(precise trusty xenial),
-  'pypy3.5'   => %i(precise trusty xenial),
-  'pypy3.6'   => %i(trusty xenial),
-  'php'    => %i(precise trusty xenial),
-  'erlang' => %i(precise trusty xenial),
-  'ruby' => %i(precise trusty xenial),
+  'perl'   => %i(precise trusty xenial bionic),
+  'perl-extras'   => %i(precise trusty xenial bionic),
+  'python' => %i(precise trusty xenial bionic),
+  'pypy2.7'   => %i(precise trusty xenial bionic),
+  'pypy3.5'   => %i(precise trusty xenial bionic),
+  'pypy3.6'   => %i(trusty xenial bionic),
+  'php'    => %i(precise trusty xenial bionic),
+  'erlang' => %i(precise trusty xenial bionic),
+  'ruby' => %i(precise trusty xenial bionic),
 }
 
 RuboCop::RakeTask.new if defined?(RuboCop)
