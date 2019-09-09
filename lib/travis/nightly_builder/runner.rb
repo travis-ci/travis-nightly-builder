@@ -13,7 +13,7 @@ module Travis
         @owner = owner
       end
 
-      def run(repo: '', branch: 'default', env: [], source: 'rake')
+      def run(repo: '', branch: 'default', env: [], source: 'rake', override: {})
         conn = build_conn
 
         message = "build branch=#{branch}; " \
@@ -27,7 +27,7 @@ module Travis
             'env' => {
               'global' => env
             }
-          }
+          }.merge(override)
 
           message = format(env, ";", message)
         end

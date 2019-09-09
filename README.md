@@ -9,6 +9,10 @@ API calls to initiate builds.
 1. Repository name
 1. Branch to build
 1. Space-delimited argument list to override the builds
+1. String to filter jobs. The string should be a semicolon-delimited list of
+   equal-delimited key-values pairs. Those jobs in `jobs.include` that match
+   _all_ of the filters will be chosen and put on the payload; e.g.,
+   'dist=bionic'
 
 ## Compatible repositories
 

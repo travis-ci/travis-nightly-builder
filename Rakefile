@@ -180,22 +180,57 @@ end
 task default: [:rubocop, :spec]
 
 desc 'Issue build request'
-task :build, [:repo, :branch, :extra] do |_t, args|
+task :build, [:repo, :branch, :extra, :override] do |_t, args|
   $LOAD_PATH.unshift(File.expand_path('../lib', __FILE__))
   require 'travis'
 
   logger.info "args=#{args}"
+  repo = args[:repo]
+  branch = args.fetch(:branch, 'default')
 
   response = Travis::NightlyBuilder::Runner.new(
-    api_endpoint: ENV.fetch('TRAVIS_API_ENDPOINT', 'https://api.travis-ci.org'),
+    api_endpoint: ENV.fetch('TRAVIS_API_ENDPOINT', 'https://api.travis-ci.com'),
     token: ENV.fetch('TRAVIS_TOKEN')
   ).run(
-    repo: args[:repo],
-    branch: args[:branch] || 'default',
-    env: args[:extra]
+    repo: repo,
+    branch: branch,
+    env: args[:extra],
+    override: JSON.load(build_config_payload(repo: repo, branch: branch, filter: args.fetch(:override, '')))
   )
 
   logger.info "response=#{response.body}"
+end
+
+def build_config(repo:, branch: 'default')
+  conn = Faraday.new(url: 'https://raw.githubusercontent.com') do |f|
+    f.use FaradayMiddleware::FollowRedirects, limit: 5
+    f.use Faraday::Request::Authorization, 'Token', ENV['GITHUB_TOKEN'] if ENV['GITHUB_TOKEN']
+    f.adapter Faraday.default_adapter
+  end
+
+  response = conn.get "travis-ci/#{repo}/#{branch}/.travis.yml"
+
+  unless response.success?
+    logger.info "response=#{response.status}"
+    return
+  end
+
+  response.body
+end
+
+def build_config_payload(repo:, branch: , filter: '')
+  # filter semicolon-delimited list of equal-delimited key-value pairs
+  cfg = YAML.load build_config(repo: repo, branch: branch)
+
+  filter = filter.split(";").map {|x| x.split "="}.to_h
+
+  return '{}' if filter.empty?
+
+  filtered = cfg['jobs']['include'].select do |job|
+    job.values_at(*filter.keys) == filter.values
+  end
+
+  { 'jobs' => { 'include' => filtered } }.to_json
 end
 
 def version_regex(runtime)
