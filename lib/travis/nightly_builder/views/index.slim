@@ -1,0 +1,32 @@
+doctype html
+html
+  head
+    title Travis CI Language Archives List
+    script src="/js/tablefilter/tablefilter.js"
+  body
+    h1 Travis CI Language Archives List
+    - if archives.any?
+      table#archives
+        tr
+          th Language
+          th OS
+          th Release
+          th Arch
+          th File Name
+        - for item in archives
+          tr
+            td.lang = item.lang
+            td.os = item.os
+            td.release = item.release
+            td.arch = item.arch
+            td.name = item.name
+      script type="text/javascript"
+        | var tf = new TableFilter(document.querySelector('#archives'), {
+        | base_path: '/js/tablefilter/',
+        | col_0: 'checklist',
+        | col_1: 'checklist',
+        | col_2: 'checklist',
+        | col_3: 'checklist',
+        | col_4: 'none',
+        | });
+        | tf.init();
