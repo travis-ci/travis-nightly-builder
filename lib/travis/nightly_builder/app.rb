@@ -40,7 +40,7 @@ module Travis
         "ohai\n"
       end
 
-      get /\/builds(?:\/([^\/]+)(?:\/([^\/]+)(?:\/([^\/]+)(?:\/(.*))?)?)?)?/ do
+      get /\/builds(?:\/([^\/]+)(?:\/([^\/]+)(?:\/([^\/]+)(?:\/(.*))?)?)?)?\/?/ do
         # /builds/:lang
         # /builds/:lang/:os
         # /builds/:lang/:os/:release
