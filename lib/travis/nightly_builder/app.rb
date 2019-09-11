@@ -45,7 +45,7 @@ module Travis
         # /builds/:lang/:os
         # /builds/:lang/:os/:release
         # /builds/:lang/:os/:release/:arch
-        @archives = files(params['captures'])
+        @archives = files(params['captures'].compact)
         slim :index
       end
 
