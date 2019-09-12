@@ -1,4 +1,5 @@
 require 'faraday'
+require 'faraday_middleware'
 
 module Travis
   module NightlyBuilder
@@ -27,9 +28,9 @@ module Travis
             'env' => {
               'global' => env
             }
-          }.merge(override)
+          }.merge(build_config_payload( repo: repo, branch: branch, filter: override ))
 
-          message = format(env, ";", message)
+          message = format(message, "; env=#{env.inspect}")
         end
 
         conn.post do |req|
@@ -47,6 +48,22 @@ module Travis
         end
       end
 
+      def build_config_payload(repo:, branch: , filter: {})
+        return {} if filter.empty?
+
+        cfg = YAML.load travis_yml(repo: repo, branch: branch)
+
+        return {} unless cfg.key?('jobs') && cfg['jobs'].key?('include')
+
+        filtered = cfg['jobs']['include'].select do |job|
+          job.values_at(*filter.keys) == filter.values
+        end
+
+        return {} if filtered.empty?
+
+        { 'jobs' => { 'include' => filtered } }
+      end
+
       private
 
       def build_conn
@@ -55,6 +72,24 @@ module Travis
           faraday.response :logger
           faraday.adapter Faraday.default_adapter
         end
+      end
+
+      def travis_yml(repo:, branch: 'default')
+        # fetch `.travis.yml` from the repo's branch
+        conn = Faraday.new(url: 'https://raw.githubusercontent.com') do |f|
+          f.use FaradayMiddleware::FollowRedirects, limit: 5
+          f.use Faraday::Request::Authorization, 'Token', ENV['GITHUB_TOKEN'] if ENV['GITHUB_TOKEN']
+          f.adapter Faraday.default_adapter
+        end
+
+        response = conn.get "travis-ci/#{repo}/#{branch}/.travis.yml"
+
+        unless response.success?
+          logger.info "response=#{response.status}"
+          return
+        end
+
+        response.body
       end
     end
   end

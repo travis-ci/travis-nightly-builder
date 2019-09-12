@@ -195,42 +195,14 @@ task :build, [:repo, :branch, :extra, :override] do |_t, args|
     repo: repo,
     branch: branch,
     env: args[:extra],
-    override: JSON.load(build_config_payload(repo: repo, branch: branch, filter: args.fetch(:override, '')))
+    override: parse_filter(args.fetch(:override, ''))
   )
 
   logger.info "response=#{response.body}"
 end
 
-def build_config(repo:, branch: 'default')
-  conn = Faraday.new(url: 'https://raw.githubusercontent.com') do |f|
-    f.use FaradayMiddleware::FollowRedirects, limit: 5
-    f.use Faraday::Request::Authorization, 'Token', ENV['GITHUB_TOKEN'] if ENV['GITHUB_TOKEN']
-    f.adapter Faraday.default_adapter
-  end
-
-  response = conn.get "travis-ci/#{repo}/#{branch}/.travis.yml"
-
-  unless response.success?
-    logger.info "response=#{response.status}"
-    return
-  end
-
-  response.body
-end
-
-def build_config_payload(repo:, branch: , filter: '')
-  # filter semicolon-delimited list of equal-delimited key-value pairs
-  cfg = YAML.load build_config(repo: repo, branch: branch)
-
-  filter = filter.split(";").map {|x| x.split "="}.to_h
-
-  return '{}' if filter.empty?
-
-  filtered = cfg['jobs']['include'].select do |job|
-    job.values_at(*filter.keys) == filter.values
-  end
-
-  { 'jobs' => { 'include' => filtered } }.to_json
+def parse_filter(str)
+  str.split(";").map {|x| x.split "="}.to_h
 end
 
 def version_regex(runtime)

@@ -49,17 +49,20 @@ module Travis
         slim :index
       end
 
-      post '/build/:repo' do
+      post '/build' do
         param :branch, String, default: 'default'
         param :env, Array, default: []
         param :source, String, default: ENV['DYNO']
 
-        form_data = JSON.parse request.body.read
+        overridable = %w(os dist arch)
+
+        form_data = params.select {|k, v| overridable.include?(k) && !v.to_s.empty?}
+        env = [params['env'], "VERSION=#{params['version']}"].reject(&:empty?).compact.join(" ")
 
         results = runner.run(
           repo: params['repo'],
           branch: params['branch'],
-          env: params['env'],
+          env: env,
           source: params['source'],
           override: form_data
         )
