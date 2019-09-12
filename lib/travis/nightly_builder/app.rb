@@ -69,8 +69,9 @@ module Travis
 
         halt 400 unless results.success?
 
-        status 201
-        json data: [JSON.parse(results.body)]
+        build = JSON.parse(results.body).fetch('builds').first
+
+        redirect "https://travis-ci.com/travis-ci/#{params['repo']}/builds/#{build['id']}"
       end
 
       run! if app_file == $PROGRAM_NAME

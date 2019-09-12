@@ -33,7 +33,7 @@ module Travis
           message = format(message, "; env=#{env.inspect}")
         end
 
-        conn.post do |req|
+        response = conn.post do |req|
           req.url "/repo/#{owner}%2F#{repo}/requests"
           req.headers['Content-Type'] = 'application/json'
           req.headers['Travis-API-Version'] = '3'
@@ -45,6 +45,30 @@ module Travis
               config: config
             }
           }.to_json
+        end
+
+        # pass through to the caller
+        return response unless response.success?
+
+        request_obj = JSON.load response.body
+        repo_id = request_obj['repository']['id']
+        request_id = request_obj['request']['id']
+
+        Timeout::timeout(30) do
+          until request_obj.fetch("@type") != 'pending'
+            sleep 1
+            response = conn.get do |req|
+              req.url "/repo/#{repo_id}/request/#{request_id}"
+              req.headers['Content-Type'] = 'application/json'
+              req.headers['Travis-API-Version'] = '3'
+              req.headers['Authorization'] = "token #{token}"
+            end
+
+            request_obj = JSON.load response.body
+          end
+
+          # our build request is no longer 'pending'
+          return response
         end
       end
 
