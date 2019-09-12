@@ -9,11 +9,15 @@ before_install:
   - pip install awscli --user
 
 stages:
-  - test
-  - build latest archives
-  - PHP
-  - Python
-  - Ruby
+  - name: test
+  - name: build latest archives
+    if: type IN (api, cron)
+  - name: PHP
+    if: type IN (api, cron)
+  - name: Python
+    if: type IN (api, cron)
+  - name: Ruby
+    if: type IN (api, cron)
 
 jobs:
   include:
