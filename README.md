@@ -4,7 +4,7 @@ Rake tasks to build compatible language runtimes via API.
 The Rake task `build` tasks 3 arguments (shown below) and invokes appropriate
 API calls to initiate builds.
 
-## `build` Rake task rguments
+## `build` Rake task arguments
 
 1. Repository name
 1. Branch to build
