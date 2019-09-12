@@ -46,7 +46,14 @@ module Travis
         # /builds/:lang/:os/:release
         # /builds/:lang/:os/:release/:arch
         @archives = files(params['captures'].compact)
-        slim :index
+
+        types = %w[text/html application/json]
+
+        if request.preferred_type(types) == 'application/json'
+          archives.map(&:to_h).to_json
+        else
+          slim :index
+        end
       end
 
       post '/build' do
