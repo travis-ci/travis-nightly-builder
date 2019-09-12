@@ -1,5 +1,6 @@
 require 'faraday'
 require 'faraday_middleware'
+require 'timeout'
 
 module Travis
   module NightlyBuilder
