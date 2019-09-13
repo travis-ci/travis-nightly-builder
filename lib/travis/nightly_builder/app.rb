@@ -50,6 +50,7 @@ module Travis
         types = %w[text/html application/json]
 
         if request.preferred_type(types) == 'application/json'
+          content_type 'application/json'
           archives.map(&:to_h).to_json
         else
           slim :index
