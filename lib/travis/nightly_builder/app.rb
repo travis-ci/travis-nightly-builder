@@ -79,7 +79,7 @@ module Travis
 
         build = JSON.parse(results.body).fetch('builds').first
 
-        redirect "https://travis-ci.com/travis-ci/#{params['repo']}/builds/#{build['id']}"
+        redirect "https://travis-ci.com/#{runner.owner}/#{params['repo']}/builds/#{build['id']}"
       end
 
       run! if app_file == $PROGRAM_NAME
