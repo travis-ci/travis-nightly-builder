@@ -107,7 +107,7 @@ module Travis
           f.adapter Faraday.default_adapter
         end
 
-        response = conn.get "travis-ci/#{repo}/#{branch}/.travis.yml"
+        response = conn.get "#{owner}/#{repo}/#{branch}/.travis.yml"
 
         unless response.success?
           logger.info "response=#{response.status}"
