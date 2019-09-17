@@ -3,6 +3,9 @@ language: ruby
 cache:
   bundler: true
 
+services:
+  - redis
+  
 dist: trusty
 
 before_install:
