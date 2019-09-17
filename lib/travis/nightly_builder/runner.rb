@@ -58,7 +58,6 @@ module Travis
         Timeout::timeout(10) do
           until request_obj.fetch("@type") == 'request' &&
               !request_obj["builds"].empty?
-            logger.debug "request_obj=#{request_obj}"
             sleep 1
             response = conn.get do |req|
               req.url "/repo/#{repo_id}/request/#{request_id}"
