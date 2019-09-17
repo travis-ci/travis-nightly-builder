@@ -47,11 +47,15 @@ module Travis
         # /builds/:lang/:os/:release/:arch
         @archives = files(params['captures'].compact)
 
-        types = %w[text/html application/json]
+        types = %w[text/html application/json application/x-yaml text/yaml]
 
-        if request.preferred_type(types) == 'application/json'
+        case request.preferred_type(types)
+        when 'application/json'
           content_type 'application/json'
           archives.map(&:to_h).to_json
+        when 'application/x-yaml', 'text/yaml'
+          content_type 'text/yaml'
+          archives.map(&:to_h).to_yaml
         else
           slim :index
         end

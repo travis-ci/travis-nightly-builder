@@ -50,6 +50,15 @@ describe Travis::NightlyBuilder::App do
       expect(last_response.header["Content-Type"]).to eq('application/json')
       expect { JSON.parse(last_response.body) }.not_to raise_error
     end
+
+    it 'returns valid YAML data when requested' do
+      header 'Accept', 'text/yaml'
+      get '/builds/erlang/os/release/arch'
+
+      expect(last_response).to be_ok
+      expect(last_response.header["Content-Type"]).to eq('text/yaml;charset=utf-8')
+      expect { YAML.load(last_response.body) }.not_to raise_error
+    end
   end
 
   describe 'POST /build' do
