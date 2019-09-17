@@ -115,7 +115,7 @@ module Travis
 
         unless response.success?
           logger.info "response=#{response.status}"
-          return
+          return '{}'
         end
 
         response.body
