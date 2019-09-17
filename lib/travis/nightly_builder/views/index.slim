@@ -19,11 +19,11 @@ html
           th File Name
         - for item in archives
           tr
-            td.lang = item.lang
-            td.os = item.os
-            td.release = item.release
-            td.arch = item.arch
-            td.name = item.name
+            td.lang = item[:lang]
+            td.os = item[:os]
+            td.release = item[:release]
+            td.arch = item[:arch]
+            td.name = item[:name]
     - else
       h2 No matching archives found
 

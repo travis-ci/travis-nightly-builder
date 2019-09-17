@@ -3,7 +3,6 @@ require 'sinatra/base'
 require 'sinatra/param'
 require 'sinatra/contrib'
 require 'google/cloud/storage'
-require 'ostruct'
 
 require_relative 'runner'
 
@@ -117,7 +116,7 @@ module Travis
         .select {|x| x.name.end_with?('.bz2')}
         .map do |x|
           lang, _, os, release, arch, file_name = x.name.split('/')
-          OpenStruct.new(lang: lang, os: os, release: release, arch: arch, name: file_name)
+          { lang: lang, os: os, release: release, arch: arch, name: file_name }
         end
       end
 
