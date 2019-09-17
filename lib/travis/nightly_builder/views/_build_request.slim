@@ -1,0 +1,41 @@
+p Not finding what you are looking for? Use this form to request a build
+
+form action="/build" method="post"
+  table
+    tr
+      th Language
+      th OS
+      th Release
+      th Arch
+      th Version
+    tr
+      td
+        select name="repo"
+          option value="travis-erlang-builder" selected="true" Erlang
+          option value="perl-builder" Perl
+          option value="php-src-builder" PHP
+          option value="cpython-builder" Python
+          option value="travis-rubies" Ruby
+      td
+        select name="os"
+          option value=""
+          option value="freebsd" FreeBSD
+          option value="osx" macOS
+          option value="linux" selected="true" Linux (Ubuntu)
+      td
+        select name="dist"
+          option value="" selected="true"
+          option value="bionic" Ubuntu Bionic (18.04)
+          option value="xenial" Ubuntu Xenial (16.04)
+          option value="12.0" FreeBSD 12.0
+      td
+        select name="arch"
+          option value="" selected="true"
+          option value="arm64" ARM
+          option value="ppc64le" POWER (little endian)
+      td
+        input type="text" name="version" value="" maxlength="10" required="required"
+
+  button type="submit" name="build-request-submit" Submit
+
+hr
