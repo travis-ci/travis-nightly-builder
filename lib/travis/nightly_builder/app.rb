@@ -3,6 +3,7 @@ require 'sinatra/base'
 require 'sinatra/param'
 require 'sinatra/contrib'
 require 'google/cloud/storage'
+require 'redis'
 
 require_relative 'runner'
 
@@ -99,6 +100,10 @@ module Travis
         )
       end
 
+      def redis
+        @redis ||= Redis.new
+      end
+
       def gcs_read_creds
         JSON.load(ENV.fetch('TRAVIS_GCS_CRED_JSON'))
       end
@@ -110,13 +115,20 @@ module Travis
           parts.first
         end
 
-        gcs_viewer.bucket('travis-ci-language-archives')
-        .files(prefix: prefix)
-        .all
-        .select {|x| x.name.end_with?('.bz2')}
-        .map do |x|
-          lang, _, os, release, arch, file_name = x.name.split('/')
-          { lang: lang, os: os, release: release, arch: arch, name: file_name }
+        if Time.now.to_i >= redis.get("#{prefix}:last_checked_at").to_i + 60*60*2 # 2 hours ago
+          gcs_viewer.bucket('travis-ci-language-archives')
+          .files(prefix: prefix)
+          .all
+          .select {|x| x.name.end_with?('.bz2')}
+          .map do |x|
+            lang, _, os, release, arch, file_name = x.name.split('/')
+            { 'lang' => lang, 'os' => os, 'release' => release, 'arch' => arch, 'name' => file_name }
+          end.tap do |x|
+            redis.set "#{prefix}:last_checked_at", Time.now.to_i
+            redis.set "#{prefix}:files", x.to_json
+          end
+        else
+          JSON.load(redis.get "#{prefix}:files")
         end
       end
 
