@@ -55,8 +55,10 @@ module Travis
         repo_id = request_obj['repository']['id']
         request_id = request_obj['request']['id']
 
-        Timeout::timeout(30) do
-          until request_obj.fetch("@type") != 'pending'
+        Timeout::timeout(10) do
+          until request_obj.fetch("@type") == 'request' &&
+              !request_obj["builds"].empty?
+            logger.debug "request_obj=#{request_obj}"
             sleep 1
             response = conn.get do |req|
               req.url "/repo/#{repo_id}/request/#{request_id}"
@@ -71,6 +73,9 @@ module Travis
           # our build request is no longer 'pending'
           return response
         end
+
+      rescue Timeout::Error => e
+        return []
       end
 
       def build_config_payload(repo:, branch: , filter: {})
