@@ -86,7 +86,7 @@ module Travis
         return {} unless cfg.key?('jobs') && cfg['jobs'].key?('include')
 
         filtered = cfg['jobs']['include'].select do |job|
-          job.values_at(*filter.keys) == filter.values
+          set_defaults(job).values_at(*filter.keys) == filter.values
         end
 
         return {} if filtered.empty?
@@ -120,6 +120,15 @@ module Travis
         end
 
         response.body
+      end
+
+      def set_defaults(job)
+        job['os'] ||= 'linux'
+        if job['os'] == 'linux'
+          job['dist'] ||= 'xenial'
+          job['arch'] ||= 'x86_64'
+        end
+        job
       end
     end
   end
