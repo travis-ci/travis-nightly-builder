@@ -121,7 +121,7 @@ RUNTIMES = {
     repo: 'erlang/otp',
     api_path: 'repos/erlang/otp/tags',
     version_prefix: 'OTP[-_]',
-    supported_major_minor: ['19.3', '20.0', '20.1', '20.2', '20.3', '21.0', '21.1', '21.2', '21.3', '22.0'],
+    supported_major_minor: ['19.3', '20.0', '20.1', '20.2', '20.3', '21.0', '21.1', '21.2', '21.3', '22.0', '22.1'],
     pass_through_release_name: true,
     skip_matching_alias: true
   ),
