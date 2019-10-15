@@ -69,7 +69,7 @@ RUNTIMES = {
     path: 'plugins/python-build/share/python-build',
     version_prefix: '',
     except: '(-dev|rc\d+)$',
-    supported_major_minor: %w(2.7 3.5 3.6 3.7),
+    supported_major_minor: %w(2.7 3.5 3.6 3.7 3.8),
   ),
   'pypy2.7'   => OpenStruct.new(
     archive_bucket: 'travis-python-archives',
