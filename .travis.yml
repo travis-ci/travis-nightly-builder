@@ -1,4 +1,7 @@
 language: ruby
+arch:
+  - amd64
+  - arm64
 
 cache:
   bundler: true
@@ -6,7 +9,7 @@ cache:
 services:
   - redis
   
-dist: trusty
+dist: xenial
 
 before_install:
   - pip install awscli --user
