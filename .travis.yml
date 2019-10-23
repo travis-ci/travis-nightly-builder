@@ -1,6 +1,6 @@
 language: ruby
 arch:
-  - amd64
+ #- amd64
   - arm64
 
 cache:
@@ -9,9 +9,10 @@ cache:
 services:
   - redis
   
-dist: trusty
+dist: xenial
 
 before_install:
+  - apt install python-pip
   - pip install awscli --user
 
 stages:
