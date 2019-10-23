@@ -12,7 +12,7 @@ services:
 dist: xenial
 
 before_install:
-  - apt install python-pip
+  - sudo apt install python-pip
   - pip install awscli --user
 
 stages:
