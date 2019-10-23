@@ -1,14 +1,12 @@
 language: ruby
-arch:
- #- amd64
-  - arm64
+arch: arm64
 
 cache:
   bundler: true
 
 services:
   - redis
-  
+
 dist: xenial
 
 before_install:
@@ -18,13 +16,17 @@ before_install:
 stages:
   - name: test
   - name: build latest archives
-    if: type IN (api, cron)
+    #if: type IN (api, cron)
+    arch: arm64
   - name: PHP
-    if: type IN (api, cron)
+    #if: type IN (api, cron)
+    arch: arm64
   - name: Python
-    if: type IN (api, cron)
+    #if: type IN (api, cron)
+    arch: arm64
   - name: Ruby
-    if: type IN (api, cron)
+    #if: type IN (api, cron)
+    arch: arm64
 
 jobs:
   include:
