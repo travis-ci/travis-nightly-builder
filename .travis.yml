@@ -9,7 +9,7 @@ cache:
 services:
   - redis
   
-dist: xenial
+dist: trusty
 
 before_install:
   - pip install awscli --user
