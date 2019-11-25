@@ -1,6 +1,7 @@
 require 'faraday'
 require 'faraday_middleware'
 require 'timeout'
+require 'travis/logger'
 
 module Travis
   module NightlyBuilder
@@ -94,6 +95,10 @@ module Travis
       end
 
       private
+
+      def logger
+        @logger ||= Travis::Logger.new(STDOUT)
+      end
 
       def build_conn
         Faraday.new(url: api_endpoint) do |faraday|

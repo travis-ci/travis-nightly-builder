@@ -1,3 +1,9 @@
+GIT
+  remote: https://github.com/travis-ci/travis-logger.git
+  revision: 8fab3fbcf25def6bf41fa4e2332cd7bf413590fa
+  specs:
+    travis-logger (0.0.1)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -163,6 +169,7 @@ DEPENDENCIES
   sinatra-contrib
   sinatra-param
   slim
+  travis-logger!
 
 BUNDLED WITH
    1.17.3
