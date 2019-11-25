@@ -75,7 +75,7 @@ module Travis
         end
 
       rescue Timeout::Error => e
-        return []
+        return Faraday::Response.new # return empty response
       end
 
       def build_config_payload(repo:, branch: , filter: {})
