@@ -56,7 +56,7 @@ module Travis
         repo_id = request_obj['repository']['id']
         request_id = request_obj['request']['id']
 
-        Timeout::timeout(10) do
+        Timeout::timeout(30) do
           until request_obj.fetch("@type") == 'request' &&
               !request_obj["builds"].empty?
             sleep 1
