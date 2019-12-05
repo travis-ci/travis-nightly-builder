@@ -69,7 +69,9 @@ module Travis
         overridable = %w(os dist arch)
 
         form_data = params.select {|k, v| overridable.include?(k) && !v.to_s.empty?}
-        env = [params['env'], "VERSION=#{params['version']}"].reject(&:empty?).compact.join(" ")
+        env_arg = "VERSION=#{params['version']}"
+        env_arg += " ALIAS=#{params['alias']}" unless params['alias'].empty?
+        env = [params['env'], env_arg].reject(&:empty?).compact.join(" ")
 
         results = runner.run(
           repo: params['repo'],
