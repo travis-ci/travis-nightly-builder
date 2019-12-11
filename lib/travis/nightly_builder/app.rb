@@ -4,6 +4,7 @@ require 'sinatra/param'
 require 'sinatra/contrib'
 require 'google/cloud/storage'
 require 'redis'
+require 'travis/logger'
 
 require_relative 'runner'
 
@@ -68,10 +69,14 @@ module Travis
 
         overridable = %w(os dist arch)
 
+        logger.info "params=#{params.inspect}"
+
         form_data = params.select {|k, v| overridable.include?(k) && !v.to_s.empty?}
         env_arg = "VERSION=#{params['version']}"
         env_arg += " ALIAS=#{params['alias']}" unless params['alias'].to_s.empty?
         env = [params['env'], env_arg].reject(&:empty?).compact.join(" ")
+
+        logger.info "form_data=#{form_data} env=#{env.inspect}"
 
         results = runner.run(
           repo: params['repo'],
@@ -97,6 +102,10 @@ module Travis
           api_endpoint: ENV.fetch('TRAVIS_API_ENDPOINT'),
           token: ENV.fetch('TRAVIS_TOKEN')
         )
+      end
+
+      def logger
+        @logger ||= Travis::Logger.new(STDOUT)
       end
 
       def gcs_viewer

@@ -82,12 +82,15 @@ module Travis
         return {} if filter.empty?
 
         cfg = YAML.load travis_yml(repo: repo, branch: branch)
+        logger.info "cfg=#{cfg}"
 
         return {} unless cfg.key?('jobs') && cfg['jobs'].key?('include')
 
         filtered = cfg['jobs']['include'].select do |job|
           set_defaults(job).values_at(*filter.keys) == filter.values
         end
+
+        logger.info "filtered=#{filtered}"
 
         return {} if filtered.empty?
 
