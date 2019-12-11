@@ -70,7 +70,7 @@ module Travis
 
         form_data = params.select {|k, v| overridable.include?(k) && !v.to_s.empty?}
         env_arg = "VERSION=#{params['version']}"
-        env_arg += " ALIAS=#{params['alias']}" unless params['alias'].empty?
+        env_arg += " ALIAS=#{params['alias']}" unless params['alias'].to_s.empty?
         env = [params['env'], env_arg].reject(&:empty?).compact.join(" ")
 
         results = runner.run(
