@@ -102,6 +102,7 @@ module Travis
       def logger
         @logger ||= Travis::Logger.new(STDOUT)
         @logger.level = Logger.const_get(ENV.fetch("LOG_LEVEL", "INFO").upcase)
+        @logger
       end
 
       def build_conn
