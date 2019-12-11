@@ -106,6 +106,7 @@ module Travis
 
       def logger
         @logger ||= Travis::Logger.new(STDOUT)
+        @logger.level = Logger.const_get(ENV.fetch("LOG_LEVEL", "INFO").upcase)
       end
 
       def gcs_viewer

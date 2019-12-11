@@ -46,7 +46,7 @@ module Travis
               branch: branch,
               config: config
             }
-          }.to_json
+          }.to_json.tap {|x| logger.debug "body=#{x}"}
         end
 
         # pass through to the caller
@@ -101,6 +101,7 @@ module Travis
 
       def logger
         @logger ||= Travis::Logger.new(STDOUT)
+        @logger.level = Logger.const_get(ENV.fetch("LOG_LEVEL", "INFO").upcase)
       end
 
       def build_conn
