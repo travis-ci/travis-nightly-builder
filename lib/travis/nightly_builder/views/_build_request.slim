@@ -4,6 +4,7 @@ form action="/build" method="post"
   table
     tr
       th Language
+      th Branch to build
       th OS
       th Release
       th Arch
@@ -17,6 +18,10 @@ form action="/build" method="post"
           option value="php-src-builder" PHP
           option value="cpython-builder" Python
           option value="travis-rubies" Ruby
+      td
+        select name="branch"
+          option value="default" selected="true" default (for most languages)
+          option value="build" build (for Ruby)
       td
         select name="os"
           option value=""
