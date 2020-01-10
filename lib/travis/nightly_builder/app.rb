@@ -5,6 +5,7 @@ require 'sinatra/contrib'
 require 'google/cloud/storage'
 require 'redis'
 require 'travis/logger'
+require 'travis/sso'
 
 require_relative 'runner'
 
@@ -22,16 +23,12 @@ module Travis
       end
 
       unless development? || test?
-        require 'rack/auth/basic'
-
-        use Rack::Auth::Basic, 'Nightly Builder Realm' do |_, password|
-          App.auth_tokens.include?(password)
-        end
-
         require 'rack/ssl'
 
         use Rack::SSL
       end
+
+      register Travis::SSO
 
       helpers Sinatra::Param
 
@@ -94,6 +91,11 @@ module Travis
       end
 
       run! if app_file == $PROGRAM_NAME
+
+
+      def admins
+        []
+      end
 
       private
 
