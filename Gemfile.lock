@@ -1,4 +1,11 @@
 GIT
+  remote: https://github.com/travis-ci/travis-config
+  revision: 0c5b76989c5da2b842e8ef02eb3082df09abe6c2
+  specs:
+    travis-config (1.1.2)
+      hashr (~> 2.0)
+
+GIT
   remote: https://github.com/travis-ci/travis-logger.git
   revision: 8fab3fbcf25def6bf41fa4e2332cd7bf413590fa
   specs:
@@ -63,6 +70,7 @@ GEM
       multi_json (~> 1.11)
       os (>= 0.9, < 2.0)
       signet (~> 0.7)
+    hashr (2.0.1)
     httpclient (2.8.3)
     i18n (1.1.0)
       concurrent-ruby (~> 1.0)
@@ -182,6 +190,7 @@ DEPENDENCIES
   sinatra-contrib
   sinatra-param
   slim
+  travis-config!
   travis-logger!
   travis-sso!
 

@@ -6,6 +6,7 @@ require 'google/cloud/storage'
 require 'redis'
 require 'travis/logger'
 require 'travis/sso'
+require 'travis/config'
 
 require_relative 'runner'
 
@@ -114,7 +115,7 @@ module Travis
 
       def gcs_viewer
         @viewer ||= Google::Cloud::Storage.new(
-          project_id: ENV.fetch('TRAVIS_GCS_PROJECT_ID'),
+          project_id: gcs_project_id,
           credentials: gcs_read_creds
         )
       end
@@ -123,7 +124,15 @@ module Travis
         @redis ||= Redis.new
       end
 
+      def gcs_project_id
+        Travis::NightlyBuilder.config.gcs.project_id
+      rescue
+        ENV.fetch('TRAVIS_GCS_PROJECT_ID')
+      end
+
       def gcs_read_creds
+        JSON.load(Travis::NightlyBuilder.config.gcs.creds_json)
+      rescue
         JSON.load(ENV.fetch('TRAVIS_GCS_CRED_JSON'))
       end
 
