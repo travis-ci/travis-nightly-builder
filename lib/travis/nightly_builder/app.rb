@@ -95,7 +95,7 @@ module Travis
 
 
       def admins
-        []
+        Travis::NightlyBuilder.config.admins || []
       end
 
       private
