@@ -22,7 +22,7 @@ describe Travis::NightlyBuilder::App do
     allow_any_instance_of(described_class).to receive(:runner)
       .and_return(runner)
     allow(runner).to receive(:build_conn).and_return(conn)
- end
+  end
 
   def app
     Travis::NightlyBuilder::App
