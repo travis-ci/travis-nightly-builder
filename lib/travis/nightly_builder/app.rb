@@ -25,11 +25,9 @@ module Travis
 
       unless development? || test?
         require 'rack/ssl'
-
         use Rack::SSL
+        register Travis::SSO
       end
-
-      register Travis::SSO
 
       helpers Sinatra::Param
 
@@ -93,6 +91,13 @@ module Travis
 
       run! if app_file == $PROGRAM_NAME
 
+      def admin?
+        if self.class.production?
+          admins.include? current_user.login
+        else
+          true
+        end
+      end
 
       def admins
         Travis::NightlyBuilder.config.admins || []
