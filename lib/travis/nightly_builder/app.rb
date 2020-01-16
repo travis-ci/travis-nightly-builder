@@ -26,7 +26,6 @@ module Travis
       unless development? || test?
         require 'rack/ssl'
         use Rack::SSL
-        register Travis::SSO
       end
 
       helpers Sinatra::Param
@@ -59,6 +58,8 @@ module Travis
       end
 
       post '/build' do
+        register Travis::SSO
+
         param :branch, String, default: 'default'
         param :env, Array, default: []
         param :source, String, default: ENV['DYNO']
