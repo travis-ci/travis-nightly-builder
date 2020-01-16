@@ -6,9 +6,6 @@ html
   body
     h1 Travis CI Language Archives List
 
-    - if admin?
-      == slim :_build_request
-
     - if archives.any?
       table#archives
         tr
