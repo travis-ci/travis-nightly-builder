@@ -58,7 +58,7 @@ module Travis
       end
 
       post '/build' do
-        register Travis::SSO
+        # register Travis::SSO
 
         param :branch, String, default: 'default'
         param :env, Array, default: []
