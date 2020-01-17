@@ -77,6 +77,11 @@ describe Travis::NightlyBuilder::App do
     let(:repo) { 'travis-erlang-builder' }
 
     context 'when posting with well-formed data' do
+      before do
+        allow_any_instance_of(described_class).to receive(:admin?)
+          .and_return(true)
+      end
+      
       it 'redirects to build page' do
         header 'Content-Type', 'application/json'
         post "/build?repo=#{repo}"
