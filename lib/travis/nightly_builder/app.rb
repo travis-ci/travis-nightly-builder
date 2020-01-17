@@ -26,6 +26,9 @@ module Travis
       unless development? || test?
         require 'rack/ssl'
         use Rack::SSL
+
+        set :sso, whitelist: ["/hello", /^\/builds/]
+        register Travis::SSO
       end
 
       helpers Sinatra::Param
