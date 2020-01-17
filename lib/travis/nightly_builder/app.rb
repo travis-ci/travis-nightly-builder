@@ -62,6 +62,7 @@ module Travis
 
       post '/build' do
         # register Travis::SSO
+        halt 401 unless admin?
 
         param :branch, String, default: 'default'
         param :env, Array, default: []
@@ -99,7 +100,7 @@ module Travis
         if self.class.production? && current_user
           admins.include? current_user.login
         else
-          true
+          false
         end
       end
 
