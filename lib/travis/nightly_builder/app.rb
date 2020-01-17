@@ -96,7 +96,7 @@ module Travis
       run! if app_file == $PROGRAM_NAME
 
       def admin?
-        if self.class.production?
+        if self.class.production? && current_user
           admins.include? current_user.login
         else
           true
