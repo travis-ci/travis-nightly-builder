@@ -26,14 +26,14 @@ module Travis
       unless development? || test?
         require 'rack/ssl'
         use Rack::SSL
-
-        enable :sessions
-        set :sso, whitelist: ["/hello"]
-        use Travis::SSO,
-          mode: :session,
-          endpoint: 'https://api.travis-ci.com'
-        include Travis::SSO::Helpers
       end
+
+      enable :sessions
+      set :sso, whitelist: ["/hello"]
+      use Travis::SSO,
+        mode: :session,
+        endpoint: 'https://api.travis-ci.com'
+      include Travis::SSO::Helpers
 
       helpers Sinatra::Param
 
