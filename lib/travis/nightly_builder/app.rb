@@ -32,6 +32,7 @@ module Travis
         use Travis::SSO,
           mode: :session,
           endpoint: 'https://api.travis-ci.com'
+        include Travis::SSO::Helpers
       end
 
       helpers Sinatra::Param
