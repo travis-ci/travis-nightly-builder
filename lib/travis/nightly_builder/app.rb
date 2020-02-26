@@ -27,7 +27,7 @@ module Travis
         require 'rack/ssl'
         use Rack::SSL
 
-        set :sso, whitelist: ["/hello", /^\/builds/]
+        set :sso, whitelist: ["/hello"]
         register Travis::SSO
       end
 
