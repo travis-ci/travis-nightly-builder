@@ -39,6 +39,10 @@ module Travis
 
       attr_reader :archives
 
+      before do
+        logger.info "user=#{current_user.login}"
+      end
+
       get '/hello' do
         "ohai\n"
       end
