@@ -103,6 +103,8 @@ module Travis
       def admin?
         if self.class.production? && current_user
           admins.include? current_user.login
+        elsif self.class.development?
+          true
         else
           false
         end
