@@ -28,10 +28,16 @@ module Travis
         use Rack::SSL
       end
 
+      UNAUTHENTICATED_CONTENT_TYPES = %w[
+        application/json
+        application/x-yaml
+        text/yaml
+      ]
+
       enable :sessions
-      set :sso, whitelist: ["/hello"]
       use Travis::SSO,
         mode: :session,
+        whitelisted?: -> r { r.path == '/hello' || UNAUTHENTICATED_CONTENT_TYPES.include?(r.content_type) },
         endpoint: 'https://api.travis-ci.com'
 
       helpers Sinatra::Param
@@ -49,7 +55,7 @@ module Travis
         # /builds/:lang/:os/:release/:arch
         @archives = files(params['captures'].compact)
 
-        types = %w[text/html application/json application/x-yaml text/yaml]
+        types = UNAUTHENTICATED_CONTENT_TYPES + %w[text/html]
 
         case request.preferred_type(types)
         when 'application/json'
