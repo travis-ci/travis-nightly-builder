@@ -45,6 +45,10 @@ module Travis
 
       attr_reader :archives
 
+      before do
+        logger.debug "user=#{current_user}"
+      end
+
       get '/hello' do
         "ohai\n"
       end
@@ -108,6 +112,7 @@ module Travis
 
       def admin?
         if self.class.production? && current_user
+          logger.debug "admins=#{admins}"
           admins.include? current_user.login
         elsif self.class.development?
           true
