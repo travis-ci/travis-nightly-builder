@@ -49,7 +49,7 @@ module Travis
         "ohai\n"
       end
 
-      before '/build/*' do
+      before '/builds/*' do
         logger.debug "current_user=#{current_user.login}"
         logger.debug "admins=#{admins}"
       end
@@ -113,7 +113,8 @@ module Travis
 
       def admin?
         logger.debug "admins=#{admins}"
-        logger.debug "user=#{current_user.login}"
+        logger.debug "user=#{current_user}"
+        logger.debug "user=#{current_user.methods.sort}"
         if self.class.production? && current_user.login
           admins.include? current_user.login
         elsif self.class.development?
