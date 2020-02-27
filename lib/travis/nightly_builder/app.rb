@@ -39,6 +39,7 @@ module Travis
         mode: :session,
         whitelisted?: -> r { r.path == '/hello' || UNAUTHENTICATED_CONTENT_TYPES.include?(r.content_type) },
         endpoint: 'https://api.travis-ci.com'
+      include Travis::SSO::Helpers
 
       helpers Sinatra::Param
 
