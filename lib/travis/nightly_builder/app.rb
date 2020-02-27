@@ -46,7 +46,7 @@ module Travis
       attr_reader :archives
 
       before do
-        logger.debug "user=#{current_user}"
+        logger.debug "user=#{current_user.login}"
       end
 
       get '/hello' do
@@ -111,7 +111,7 @@ module Travis
       run! if app_file == $PROGRAM_NAME
 
       def admin?
-        if self.class.production? && current_user
+        if self.class.production? && current_user.login
           logger.debug "admins=#{admins}"
           admins.include? current_user.login
         elsif self.class.development?
