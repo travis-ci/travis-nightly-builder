@@ -34,9 +34,8 @@ module Travis
         text/yaml
       ]
 
-      enable :sessions
       use Travis::SSO,
-        mode: :session,
+        mode: :single_page,
         whitelisted?: -> r { r.path == '/hello' || UNAUTHENTICATED_CONTENT_TYPES.include?(r.content_type) },
         endpoint: 'https://api.travis-ci.com'
       include Travis::SSO::Helpers
