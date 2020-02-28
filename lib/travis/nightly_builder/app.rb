@@ -60,7 +60,7 @@ module Travis
         # /builds/:lang/:os/:release/:arch
         @archives = files(params['captures'].compact)
 
-        types = UNAUTHENTICATED_CONTENT_TYPES + %w[text/html]
+        types = %w[text/html] + UNAUTHENTICATED_CONTENT_TYPES
 
         case request.preferred_type(types)
         when 'application/json'
