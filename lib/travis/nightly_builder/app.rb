@@ -34,11 +34,17 @@ module Travis
         text/yaml
       ]
 
-      use Travis::SSO,
-        mode: :single_page,
-        whitelisted?: -> r { r.path == '/hello' || ( r.get? && UNAUTHENTICATED_CONTENT_TYPES.include?(r.get_header("HTTP_ACCEPT"))) },
-        endpoint: 'https://api.travis-ci.com'
-      include Travis::SSO::Helpers
+      if test?
+        define_method(:current_user) do
+          OpenStruct.new(login: 'test_user')
+        end
+      else
+        use Travis::SSO,
+          mode: :single_page,
+          whitelisted?: -> r { r.path == '/hello' || ( r.get? && UNAUTHENTICATED_CONTENT_TYPES.include?(r.get_header("HTTP_ACCEPT"))) },
+          endpoint: 'https://api.travis-ci.com'
+        include Travis::SSO::Helpers
+      end
 
       helpers Sinatra::Param
 
