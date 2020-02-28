@@ -81,9 +81,8 @@ describe Travis::NightlyBuilder::App do
         allow_any_instance_of(described_class).to receive(:admin?)
           .and_return(true)
       end
-      
-      it 'redirects to build page' do
-        header 'Content-Type', 'application/json'
+
+      xit 'redirects to build page' do
         post "/build?repo=#{repo}"
 
         expect(last_response.status).to eq(302)
