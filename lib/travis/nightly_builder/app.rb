@@ -49,8 +49,7 @@ module Travis
       end
 
       before '/builds/*' do
-        logger.debug "current_user=#{current_user.login}"
-        logger.debug "admins=#{admins}"
+        logger.debug "current_user=#{current_user.login}" if current_user
       end
 
       get /\/builds(?:\/([^\/]+)(?:\/([^\/]+)(?:\/([^\/]+)(?:\/(.*))?)?)?)?\/?/ do
@@ -111,9 +110,6 @@ module Travis
       run! if app_file == $PROGRAM_NAME
 
       def admin?
-        logger.debug "admins=#{admins}"
-        logger.debug "user=#{current_user}"
-        logger.debug "user=#{current_user.methods.sort}"
         if self.class.production? && current_user.login
           admins.include? current_user.login
         elsif self.class.development?
