@@ -50,6 +50,7 @@ module Travis
 
       before '/builds/*' do
         logger.debug "current_user=#{current_user.login}" if current_user
+        logger.debug "request=#{request}"
       end
 
       get /\/builds(?:\/([^\/]+)(?:\/([^\/]+)(?:\/([^\/]+)(?:\/(.*))?)?)?)?\/?/ do
