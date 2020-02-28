@@ -93,7 +93,7 @@ GEM
       coderay (~> 1.1.0)
       method_source (~> 0.9.0)
     public_suffix (4.0.1)
-    puma (3.12.2)
+    puma (3.12.3)
     rack (2.0.8)
     rack-protection (2.0.3)
       rack
@@ -102,7 +102,7 @@ GEM
     rack-test (1.1.0)
       rack (>= 1.0, < 3)
     rainbow (3.0.0)
-    rake (12.3.1)
+    rake (12.3.3)
     redis (4.1.2)
     representable (3.0.4)
       declarative (< 0.1.0)
