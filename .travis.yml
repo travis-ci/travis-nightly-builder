@@ -25,7 +25,7 @@ stages:
 jobs:
   include:
     - stage: test
-      script: env LOG_LEVEL=WARN bundle exec rake spec
+      script: env APP_ENV=test LOG_LEVEL=WARN bundle exec rake spec
     - stage: build latest archives
       script: bundle exec rake build_latest_archives
 #    - script: bundle exec rake build[apt-whitelist-checker,run]
