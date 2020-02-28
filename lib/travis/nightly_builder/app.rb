@@ -36,7 +36,7 @@ module Travis
 
       use Travis::SSO,
         mode: :single_page,
-        whitelisted?: -> r { r.path == '/hello' || UNAUTHENTICATED_CONTENT_TYPES.include?(r.content_type) },
+        whitelisted?: -> r { r.path == '/hello' || ( r.get? && UNAUTHENTICATED_CONTENT_TYPES.include?(r.get_header("HTTP_ACCEPT"))) },
         endpoint: 'https://api.travis-ci.com'
       include Travis::SSO::Helpers
 
