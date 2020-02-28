@@ -82,7 +82,7 @@ describe Travis::NightlyBuilder::App do
           .and_return(true)
       end
 
-      xit 'redirects to build page' do
+      it 'redirects to build page' do
         post "/build?repo=#{repo}"
 
         expect(last_response.status).to eq(302)
