@@ -59,7 +59,7 @@ module Travis
       end
 
       before do
-        logger.debug "session=#{session}"
+        logger.debug "session=#{session.to_hash}"
       end
 
       before '/builds/*' do
