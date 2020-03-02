@@ -34,8 +34,8 @@ module Travis
         text/yaml
       ]
 
-      set session_secret: Travis::NightlyBuilder.config.session_secret, static: false
       enable :method_override, :sessions
+      set session_secret: Travis::NightlyBuilder.config.session_secret, static: false
 
       if test?
         define_method(:current_user) do
