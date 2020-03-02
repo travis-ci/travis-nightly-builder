@@ -45,6 +45,11 @@ module Travis
         set :sso,
           mode: :session,
           whitelisted?: -> r { r.path == '/hello' || ( r.get? && UNAUTHENTICATED_CONTENT_TYPES.include?(r.get_header("HTTP_ACCEPT"))) },
+          set_user: -> r, u {
+            p "session=#{r.session.to_hash}"
+            p "u=#{u.inspect}"
+            r.session['user_id_key'] = u['login']
+          },
           endpoint: 'https://api.travis-ci.com'
         # include Travis::SSO::Helpers
         register Travis::SSO
@@ -199,6 +204,11 @@ module Travis
         end
       end
 
+      helpers do
+        def current_user
+          @current_user ||= OpenStruct.new(login: session['user_login'])
+        end
+      end
     end
   end
 end
