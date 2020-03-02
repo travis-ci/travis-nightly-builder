@@ -37,7 +37,7 @@ module Travis
       enable :method_override, :sessions
       set session_secret: Travis::NightlyBuilder.config.session_secret, static: false
 
-      if test?
+      if development? || test?
         define_method(:current_user) do
           OpenStruct.new(login: 'test_user')
         end
@@ -114,6 +114,7 @@ module Travis
 
         results = runner.run(
           repo: params['repo'],
+          token: current_user['token'],
           branch: params['branch'],
           env: env,
           source: params['source'],
@@ -147,8 +148,7 @@ module Travis
 
       def runner
         @runner ||= Runner.new(
-          api_endpoint: ENV.fetch('TRAVIS_API_ENDPOINT'),
-          token: ENV.fetch('TRAVIS_TOKEN')
+          api_endpoint: ENV.fetch('TRAVIS_API_ENDPOINT')
         )
       end
 

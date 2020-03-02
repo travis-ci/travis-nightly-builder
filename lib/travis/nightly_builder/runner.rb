@@ -6,17 +6,15 @@ require 'travis/logger'
 module Travis
   module NightlyBuilder
     class Runner
-      attr_reader :api_endpoint, :token, :owner
+      attr_reader :api_endpoint, :owner
 
       def initialize(api_endpoint: ENV['TRAVIS_API_ENDPOINT'],
-                     token: ENV['TRAVIS_TOKEN'],
                      owner: ENV.fetch('REPO_OWNER', 'travis-ci'))
         @api_endpoint = api_endpoint
-        @token = token
         @owner = owner
       end
 
-      def run(repo: '', branch: 'default', env: [], source: 'rake', override: {})
+      def run(repo: '', token: ENV['TRAVIS_TOKEN'], branch: 'default', env: [], source: 'rake', override: {})
         conn = build_conn
 
         message = "build branch=#{branch}; " \
