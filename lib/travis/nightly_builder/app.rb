@@ -46,9 +46,10 @@ module Travis
           mode: :session,
           whitelisted?: -> r { r.path == '/hello' || ( r.get? && UNAUTHENTICATED_CONTENT_TYPES.include?(r.get_header("HTTP_ACCEPT"))) },
           set_user: -> r, u {
-            p "session=#{r.session.to_hash}"
-            p "u=#{u.inspect}"
+            # p "session=#{r.session.to_hash}"
+            # p "u=#{u.inspect}"
             r.session['user_login'] = u['login']
+            r.session['user_token'] = u['token']
           },
           user_id_key: 'user_login',
           endpoint: 'https://api.travis-ci.com'
@@ -65,7 +66,7 @@ module Travis
       end
 
       before do
-        logger.debug "session=#{session.to_hash}"
+        # logger.debug "session=#{session.to_hash}"
       end
 
       before '/builds/*' do
@@ -114,7 +115,7 @@ module Travis
 
         results = runner.run(
           repo: params['repo'],
-          token: current_user['token'],
+          token: session['user_token'],
           branch: params['branch'],
           env: env,
           source: params['source'],
