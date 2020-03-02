@@ -48,8 +48,9 @@ module Travis
           set_user: -> r, u {
             p "session=#{r.session.to_hash}"
             p "u=#{u.inspect}"
-            r.session['user_id_key'] = u['login']
+            r.session['user_login'] = u['login']
           },
+          user_id_key: 'login',
           endpoint: 'https://api.travis-ci.com'
         # include Travis::SSO::Helpers
         register Travis::SSO
