@@ -35,7 +35,7 @@ module Travis
       ]
 
       set session_secret: Travis::NightlyBuilder.config.session_secret, static: false
-      enable :method_override
+      enable :method_override, :sessions
 
       if test?
         define_method(:current_user) do
@@ -85,7 +85,6 @@ module Travis
       end
 
       post '/build' do
-        # register Travis::SSO
         halt 401 unless admin?
 
         param :branch, String, default: 'default'
