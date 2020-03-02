@@ -34,16 +34,19 @@ module Travis
         text/yaml
       ]
 
+      set session_secret: Travis::NightlyBuilder.config.session_secret, static: false
+
       if test?
         define_method(:current_user) do
           OpenStruct.new(login: 'test_user')
         end
       else
-        use Travis::SSO,
-          mode: :single_page,
+        set :sso,
+          mode: :session,
           whitelisted?: -> r { r.path == '/hello' || ( r.get? && UNAUTHENTICATED_CONTENT_TYPES.include?(r.get_header("HTTP_ACCEPT"))) },
           endpoint: 'https://api.travis-ci.com'
-        include Travis::SSO::Helpers
+        # include Travis::SSO::Helpers
+        register Travis::SSO
       end
 
       helpers Sinatra::Param
