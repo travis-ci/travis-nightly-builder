@@ -58,6 +58,10 @@ module Travis
         "ohai\n"
       end
 
+      before do
+        logger.debug "session=#{session}"
+      end
+
       before '/builds/*' do
         logger.debug "current_user=#{current_user.login}" if current_user
         logger.debug "request=#{request}"
