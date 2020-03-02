@@ -50,7 +50,7 @@ module Travis
             p "u=#{u.inspect}"
             r.session['user_login'] = u['login']
           },
-          user_id_key: 'login',
+          user_id_key: 'user_login',
           endpoint: 'https://api.travis-ci.com'
         # include Travis::SSO::Helpers
         register Travis::SSO
