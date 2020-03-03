@@ -37,15 +37,13 @@ module Travis
           authenticated?: -> r {
             redis = Redis.new
             r.session['user_login'] &&
-            redis.exists("user_token:#{r.session['user_login']}") &&
-            Time.now.to_i < redis.get("user_token:#{r.session['user_login']}:created_at").to_i + 48 * 24 * 60 * 60 # 48 days
+            redis.exists("user_token:#{r.session['user_login']}")
           },
           whitelisted?: -> r { r.path == '/hello' || ( r.get? && UNAUTHENTICATED_CONTENT_TYPES.include?(r.get_header("HTTP_ACCEPT"))) },
           set_user: -> r, u {
             redis = Redis.new
             r.session['user_login'] = u['login']
-            redis.set "user_token:#{u['login']}", u['token']
-            redis.set "user_token:#{r.session['user_login']}:created_at", Time.now.to_i
+            redis.set "user_token:#{u['login']}", u['token'], ex: 48*24*60*60 # 48 days
           },
           user_id_key: 'user_login',
           endpoint: Travis::NightlyBuilder.config.api_endpoint || 'https://api.travis-ci.com'
@@ -177,7 +175,9 @@ module Travis
           parts.first
         end
 
-        if Time.now.to_i >= redis.get("#{prefix}:last_checked_at").to_i + 60*60*2 # 2 hours ago
+        if json_data = redis.get("#{prefix}:files")
+          JSON.load(json_data)
+        else
           gcs_viewer.bucket('travis-ci-language-archives')
           .files(prefix: prefix)
           .all
@@ -186,11 +186,8 @@ module Travis
             lang, _, os, release, arch, file_name = x.name.split('/')
             { 'lang' => lang, 'os' => os, 'release' => release, 'arch' => arch, 'name' => file_name }
           end.tap do |x|
-            redis.set "#{prefix}:last_checked_at", Time.now.to_i
-            redis.set "#{prefix}:files", x.to_json
+            redis.set "#{prefix}:files", x.to_json, ex: 60*60*2 # 2 hours
           end
-        else
-          JSON.load(redis.get "#{prefix}:files")
         end
       end
 
