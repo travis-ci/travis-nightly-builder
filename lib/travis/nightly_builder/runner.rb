@@ -25,9 +25,10 @@ module Travis
           message = format(message, nil)
         else
           config = {
+            "merge_mode" => "deep_merge",
             'env' => {
               'global' => env
-            }
+            },
           }.merge(build_config_payload( repo: repo, branch: branch, filter: override ))
 
           logger.debug "config=#{config}"
