@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.com/travis-ci/travis-nightly-builder.svg?branch=build)](https://travis-ci.com/travis-ci/travis-nightly-builder)
+
 # travis-nightly-builder
 Rake tasks to build compatible language runtimes via API.
 

@@ -8,6 +8,7 @@ html
 
     - if admin?
       == slim :_build_request
+      == slim :_octocat
 
     - if archives.any?
       table#archives
