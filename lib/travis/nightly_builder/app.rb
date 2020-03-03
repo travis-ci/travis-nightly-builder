@@ -44,11 +44,11 @@ module Travis
       else
         set :sso,
           mode: :session,
-          authenticated?: -> r { r.session['user_login'] && redis.exists("user_token:#{r.session['user_login']}") },
+          authenticated?: -> r { r.session['user_login'] && Redis.new.exists("user_token:#{r.session['user_login']}") },
           whitelisted?: -> r { r.path == '/hello' || ( r.get? && UNAUTHENTICATED_CONTENT_TYPES.include?(r.get_header("HTTP_ACCEPT"))) },
           set_user: -> r, u {
             r.session['user_login'] = u['login']
-            redis.set "user_token:#{login}", u['token']
+            Redis.new.set "user_token:#{u['login']}", u['token']
           },
           user_id_key: 'user_login',
           endpoint: 'https://api.travis-ci.com'
