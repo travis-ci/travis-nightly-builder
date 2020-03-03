@@ -67,3 +67,38 @@ $ bundle exec rake build['perl-builder','master',"VERSION=perl-5.24.0 NAME=5.24.
 ### [apt-whitelist-checker](https://github.com/travis-ci/apt-whitelist-checker)
 
 Runs tests for APT package whitelist requests
+
+## Web App
+
+This repository also includes a Sinatra app which serves two purposes:
+
+1. List known archives for given criteria:
+   ```
+   GET /builds/:lang/:os/:release/:arch
+   ```
+   The list is stored as JSON in a Redis instance and refreshed if the local data are
+   older than 2 hours.
+   Each of the trailing parts can be omitted, in which case all archives matching
+   the given criteria are shown.
+
+   1. This endpoint normally serves HTML content, and in this case a Travis CI
+      account is required.
+   1. You may also request the list as JSON or YAML with the `Accept` header; e.g.,
+      ```
+      curl -H "Accept: application/json" https://language-archives.travis-ci.com/builds/erlang
+      ```
+      No Travis CI account is required in this case.
+2. Request builds with given criteria:
+   ```
+   POST /build
+   ```
+   with body containing the following parameters:
+    * repo:
+    * branch:
+    * env:
+    * os:
+    * dist:
+    * arch:
+    * version:
+
+   This endpoint is valid for Travis CI administrators only.
