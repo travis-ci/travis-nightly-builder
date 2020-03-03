@@ -98,6 +98,8 @@ module Travis
       post '/build' do
         halt 401 unless admin?
 
+        logger.debug "session_keys=#{session.keys}"
+
         param :branch, String, default: 'default'
         param :env, Array, default: []
         param :source, String, default: ENV['DYNO']
