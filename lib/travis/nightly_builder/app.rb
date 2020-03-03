@@ -13,16 +13,6 @@ require_relative 'runner'
 module Travis
   module NightlyBuilder
     class App < Sinatra::Base
-      class << self
-        def auth_tokens
-          @auth_tokens ||= (ENV['AUTH_TOKENS'] || '').split(':').map(&:strip)
-        end
-
-        def base_env
-          @base_env ||= Hash[ENV]
-        end
-      end
-
       unless development? || test?
         require 'rack/ssl'
         use Rack::SSL
