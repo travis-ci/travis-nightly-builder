@@ -48,7 +48,7 @@ module Travis
             redis.set "user_token:#{r.session['user_login']}:created_at", Time.now.to_i
           },
           user_id_key: 'user_login',
-          endpoint: 'https://api.travis-ci.com'
+          endpoint: Travis::NightlyBuilder.config.api_endpoint || 'https://api.travis-ci.com'
         register Travis::SSO
       end
 
