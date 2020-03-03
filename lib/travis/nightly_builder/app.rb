@@ -44,16 +44,14 @@ module Travis
       else
         set :sso,
           mode: :session,
+          authenticated?: -> r { r.session['user_login'] && redis.exists("user_token:#{r.session['user_login']}") },
           whitelisted?: -> r { r.path == '/hello' || ( r.get? && UNAUTHENTICATED_CONTENT_TYPES.include?(r.get_header("HTTP_ACCEPT"))) },
           set_user: -> r, u {
-            # p "session=#{r.session.to_hash}"
-            # p "u=#{u.inspect}"
             r.session['user_login'] = u['login']
-            r.session['user_token'] = u['token']
+            redis.set "user_token:#{login}", u['token']
           },
           user_id_key: 'user_login',
           endpoint: 'https://api.travis-ci.com'
-        # include Travis::SSO::Helpers
         register Travis::SSO
       end
 
@@ -117,7 +115,7 @@ module Travis
 
         results = runner.run(
           repo: params['repo'],
-          token: session['user_token'],
+          token: user_token_for(current_user.login),
           branch: params['branch'],
           env: env,
           source: params['source'],
@@ -206,6 +204,10 @@ module Travis
         else
           JSON.load(redis.get "#{prefix}:files")
         end
+      end
+
+      def user_token_for(login)
+        redis.get "user_token:#{login}"
       end
 
       helpers do
