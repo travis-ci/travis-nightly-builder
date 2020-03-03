@@ -106,14 +106,14 @@ module Travis
 
         overridable = %w(os dist arch)
 
-        logger.info "params=#{params.inspect}"
+        logger.debug "params=#{params.inspect}"
 
         form_data = params.select {|k, v| overridable.include?(k) && !v.to_s.empty?}
         env_arg = "VERSION=#{params['version']}"
         env_arg += " ALIAS=#{params['alias']}" unless params['alias'].to_s.empty?
         env = [params['env'], env_arg].reject(&:empty?).compact.join(" ")
 
-        logger.info "form_data=#{form_data} env=#{env.inspect}"
+        logger.debug "form_data=#{form_data} env=#{env.inspect}"
 
         results = runner.run(
           repo: params['repo'],

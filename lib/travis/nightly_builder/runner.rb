@@ -30,6 +30,8 @@ module Travis
             }
           }.merge(build_config_payload( repo: repo, branch: branch, filter: override ))
 
+          logger.debug "config=#{config}"
+
           message = format(message, "; env=#{env.inspect}")
         end
 
@@ -80,7 +82,8 @@ module Travis
         return {} if filter.empty?
 
         cfg = YAML.load travis_yml(repo: repo, branch: branch)
-        logger.info "cfg=#{cfg}"
+        logger.debug "cfg=#{cfg}"
+        logger.debug "filter=#{filter}"
 
         return {} unless cfg.key?('jobs') && cfg['jobs'].key?('include')
 
@@ -88,11 +91,11 @@ module Travis
           set_defaults(job).values_at(*filter.keys) == filter.values
         end
 
-        logger.info "filtered=#{filtered}"
+        logger.debug "filtered=#{filtered}"
 
         return {} if filtered.empty?
 
-        { 'jobs' => { 'include' => filtered } }
+        { 'jobs' => { 'include' => filtered } }.tap {|x| logger.debug "filtered_config=#{x}"}
       end
 
       private
@@ -122,7 +125,7 @@ module Travis
         response = conn.get "#{owner}/#{repo}/#{branch}/.travis.yml"
 
         unless response.success?
-          logger.info "response=#{response.status}"
+          logger.debug "response=#{response.status}"
           return '{}'
         end
 
