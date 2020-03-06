@@ -37,5 +37,6 @@ build/
 # ignore Rake task artifact
 payload
 
+.*.swp
 .*env
 .envrc
