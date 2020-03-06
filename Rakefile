@@ -13,6 +13,7 @@ require 'logger'
 require 'pp'
 require 'yaml'
 require 'ostruct'
+require 'term/ansicolor'
 
 BUCKET_PREFIX = {
   precise: 'binaries/ubuntu/12.04/x86_64/',
@@ -155,6 +156,8 @@ RuboCop::RakeTask.new if defined?(RuboCop)
 
 RSpec::Core::RakeTask.new if defined?(RSpec)
 
+include Term::ANSIColor
+
 def latest_archives
   @latest_archives
 end
@@ -201,7 +204,7 @@ task :build, [:repo, :branch, :extra, :override] do |_t, args|
 
   if response.success?
     build = JSON.parse(response.body).fetch('builds').first
-    logger.info "build_url=https://travis-ci.com/travis-ci/#{repo}/builds/#{build['id']}"
+    logger.info "#{green}#{bold}https://travis-ci.com/travis-ci/#{repo}/builds/#{build['id']}#{reset}"
   end
 end
 
