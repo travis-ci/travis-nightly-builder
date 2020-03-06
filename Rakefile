@@ -189,8 +189,7 @@ task :build, [:repo, :branch, :extra, :override] do |_t, args|
   branch = args.fetch(:branch, 'default')
 
   response = Travis::NightlyBuilder::Runner.new(
-    api_endpoint: ENV.fetch('TRAVIS_API_ENDPOINT', 'https://api.travis-ci.com'),
-    token: ENV.fetch('TRAVIS_TOKEN')
+    api_endpoint: ENV.fetch('TRAVIS_API_ENDPOINT', 'https://api.travis-ci.com')
   ).run(
     repo: repo,
     branch: branch,
