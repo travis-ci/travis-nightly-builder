@@ -204,7 +204,7 @@ task :build, [:repo, :branch, :extra, :override] do |_t, args|
 
   if response.success?
     build = JSON.parse(response.body).fetch('builds').first
-    logger.info "#{green}#{bold}https://travis-ci.com/travis-ci/#{repo}/builds/#{build['id']}#{reset}"
+    logger.info "#{green}#{bold} https://travis-ci.com/travis-ci/#{repo}/builds/#{build['id']} #{reset}"
   end
 end
 
