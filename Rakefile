@@ -198,6 +198,11 @@ task :build, [:repo, :branch, :extra, :override] do |_t, args|
   )
 
   logger.info "response=#{response.body}"
+
+  if response.success?
+    build = JSON.parse(response.body).fetch('builds').first
+    logger.info "build_url=https://travis-ci.com/travis-ci/#{repo}/builds/#{build['id']}"
+  end
 end
 
 def parse_filter(str)
