@@ -88,7 +88,7 @@ module Travis
         param :env, Array, default: []
         param :source, String, default: ENV['DYNO']
 
-        overridable = %w(os dist arch)
+        overridable = %w(os dist osx_image arch)
 
         logger.debug "params=#{params.inspect}"
 

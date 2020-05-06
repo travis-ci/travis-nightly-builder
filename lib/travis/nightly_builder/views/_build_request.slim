@@ -6,7 +6,8 @@ form action="/build" method="post"
       th Language
       th Branch to build
       th OS
-      th Release
+      th Release (For Linux and FreeBSD)
+      th macOS version
       th Arch
       th Version
       th Alias
@@ -35,6 +36,14 @@ form action="/build" method="post"
           option value="bionic" Ubuntu Bionic (18.04)
           option value="xenial" Ubuntu Xenial (16.04)
           option value="12.0" FreeBSD 12.0
+      td
+        select name="osx_image"
+          option value="" selected="true"
+          option value="xcode11.4.1" Catalina (10.15)
+          option value="xcode10.2" Mojave (10.14)
+          option value="xcode9.4" High Sierra (10.13)
+          option value="xcode8.3" Sierra (10.12)
+          option value="xcode7.3" El Capitan (10.11)
       td
         select name="arch"
           option value=""
