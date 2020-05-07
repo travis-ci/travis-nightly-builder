@@ -82,6 +82,8 @@ module Travis
       def build_config_payload(repo:, branch: , filter: {})
         return {} if filter.empty?
 
+        filter = refine(filter)
+
         cfg = YAML.load travis_yml(repo: repo, branch: branch)
         logger.debug "cfg=#{cfg}"
         logger.debug "filter=#{filter}"
@@ -143,6 +145,17 @@ module Travis
           job['osx_image'] = 'xcode9.4'
         end
         job
+      end
+
+      def refine(filter)
+        case filter["os"]
+        when 'linux', 'freebsd'
+          filter.delete 'osx_image'
+        when 'osx'
+          filter.delete 'dist'
+        end
+
+        filter
       end
     end
   end
