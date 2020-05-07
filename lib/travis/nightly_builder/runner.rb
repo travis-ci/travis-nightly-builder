@@ -142,7 +142,7 @@ module Travis
           job['arch'] ||= 'x86_64'
         end
         if job['os'] == 'osx'
-          job['osx_image'] = 'xcode9.4'
+          job['osx_image'] ||= 'xcode9.4'
         end
         job
       end
