@@ -49,8 +49,10 @@ jobs:
       name: 3.7-dev
     - script: bundle exec rake build['cpython-builder','default','VERSION=3.8-dev']
       name: 3.8-dev
-    - script: bundle exec rake build['cpython-builder','default','VERSION=3.9-dev ALIAS=nightly']
+    - script: bundle exec rake build['cpython-builder','default','VERSION=3.9-dev']
       name: 3.9-dev
+    - script: bundle exec rake build['cpython-builder','default','VERSION=3.10-dev ALIAS=nightly']
+      name: 3.10-dev
     - script: bundle exec rake build['cpython-builder','default','VERSION=pypy3-dev ALIAS=pypy3-nightly']
       name: pypy3-dev
     - script: bundle exec rake build['cpython-builder','default','VERSION=pypy-dev ALIAS=pypy-nightly']
