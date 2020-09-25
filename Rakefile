@@ -81,7 +81,7 @@ RUNTIMES = {
     path: 'plugins/python-build/share/python-build',
     version_prefix: 'pypy2.7-',
     except: '(-(alpha|beta)\d*|-src)$',
-    supported_major_minor: %w(5.9 5.10 6.0 7.0 7.1),
+    supported_major_minor: %w(5.9 5.10 6.0 7.0 7.1 7.2 7.3),
   ),
   'pypy3.5'   => OpenStruct.new(
     archive_bucket: 'travis-python-archives',
@@ -103,7 +103,7 @@ RUNTIMES = {
     path: 'plugins/python-build/share/python-build',
     version_prefix: 'pypy3.6-',
     except: '(-(alpha|beta)\d*|-src)$',
-    supported_major_minor: %w(7.0 7.1),
+    supported_major_minor: %w(7.0 7.1 7.2 7.3),
   ),
   'php'    => OpenStruct.new(
     archive_bucket: 'travis-php-archives',
