@@ -32,14 +32,14 @@ jobs:
     - stage: PHP
       script: bundle exec rake build[php-src-builder,default,'VERSION=master ALIAS=nightly ICU_RELEASE=68.1 ICU_INSTALL_DIR=$HOME/.phpenv/versions/$VERSION']
       name: nightly
-    - script: bundle exec rake build[php-src-builder,default,'VERSION=7.1snapshot ALIAS=$VERSION ICU_RELEASE=68.1 ICU_INSTALL_DIR=$HOME/.phpenv/versions/$VERSION']
-      name: 7.1snapshot
     - script: bundle exec rake build[php-src-builder,default,'VERSION=7.2snapshot ALIAS=$VERSION ICU_RELEASE=68.1 ICU_INSTALL_DIR=$HOME/.phpenv/versions/$VERSION']
       name: 7.2snapshot
     - script: bundle exec rake build[php-src-builder,default,'VERSION=7.3snapshot ALIAS=$VERSION ICU_RELEASE=68.1 ICU_INSTALL_DIR=$HOME/.phpenv/versions/$VERSION']
       name: 7.3snapshot
     - script: bundle exec rake build[php-src-builder,default,'VERSION=7.4snapshot ALIAS=$VERSION ICU_RELEASE=68.1 ICU_INSTALL_DIR=$HOME/.phpenv/versions/$VERSION']
       name: 7.4snapshot
+    - script: bundle exec rake build[php-src-builder,default,'VERSION=8.0snapshot ALIAS=$VERSION ICU_RELEASE=68.1 ICU_INSTALL_DIR=$HOME/.phpenv/versions/$VERSION']
+      name: 8.0snapshot
     - stage: Python
       script: bundle exec rake build['cpython-builder','default','VERSION=3.5-dev']
       name: 3.5-dev
