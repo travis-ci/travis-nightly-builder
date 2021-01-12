@@ -25,7 +25,7 @@ module Travis
           message = format(message, nil)
         else
           config = {
-            "merge_mode" => "deep_merge",
+            "merge_mode" => "merge",
             'env' => {
               'global' => env
             },
