@@ -1,3 +1,5 @@
+require 'webmock/rspec'
+
 module Travis
   module NightlyBuilder
     class Test

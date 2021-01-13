@@ -6,7 +6,7 @@ require 'travis/logger'
 module Travis
   module NightlyBuilder
     class Runner
-      attr_reader :api_endpoint, :owner
+      attr_reader :api_endpoint, :owner, :repo_yml
 
       def initialize(api_endpoint: ENV['TRAVIS_API_ENDPOINT'],
                      owner: ENV.fetch('REPO_OWNER', 'travis-ci'))
@@ -25,13 +25,15 @@ module Travis
           message = format(message, nil)
         else
           config = {
-            "merge_mode" => "merge",
+            "merge_mode" => "replace",
             'env' => {
               'global' => env
             },
           }.merge(build_config_payload( repo: repo, branch: branch, filter: override ))
 
           logger.debug "config=#{config}"
+
+          payload = YAML.load(repo_yml).merge(config).tap {|x| logger.debug "payload=#{x}"}
 
           message = format(message, "; env=#{env.inspect}")
         end
@@ -45,7 +47,7 @@ module Travis
             request: {
               message: message,
               branch: branch,
-              config: config
+              config: payload
             }
           }.to_json.tap {|x| logger.debug "body=#{x}"}
         end
@@ -118,6 +120,7 @@ module Travis
       end
 
       def travis_yml(repo:, branch: 'default')
+        return @repo_yml if @repo_yml
         # fetch `.travis.yml` from the repo's branch
         conn = Faraday.new(url: 'https://raw.githubusercontent.com') do |f|
           f.use FaradayMiddleware::FollowRedirects, limit: 5
@@ -132,7 +135,7 @@ module Travis
           return '{}'
         end
 
-        response.body
+        @repo_yml = response.body
       end
 
       def set_defaults(job)

@@ -24,6 +24,10 @@ describe Travis::NightlyBuilder::App do
     allow(runner).to receive(:build_conn).and_return(conn)
   end
 
+  after :each do
+    Faraday.default_connection = nil
+  end
+
   def app
     Travis::NightlyBuilder::App
   end
@@ -83,7 +87,15 @@ describe Travis::NightlyBuilder::App do
       end
 
       it 'redirects to build page' do
-        post "/build?repo=#{repo}"
+        stub_request(:get, %r[https://raw.githubusercontent.com/.*]).to_return(
+          body: <<~YAML,
+            jobs:
+              include:
+                - arch: x86_64
+          YAML
+          headers: {content_type: 'text-plain; charset=utf-8'}
+        )
+        post "/build?repo=#{repo}", {"arch" => "x86_64"}
 
         expect(last_response.status).to eq(302)
         expect(last_response.header["Location"]).to eq("https://travis-ci.com/#{owner}/#{repo}/builds/127202117")
