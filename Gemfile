@@ -9,10 +9,11 @@ gem 'rack-ssl'
 gem 'rspec', group: %i(development test)
 gem 'rubocop', group: %i(development test)
 gem 'simplecov', group: %i(development test)
+gem 'webmock', group: %i(test)
 gem 'sinatra'
 gem 'sinatra-contrib'
 gem 'sinatra-param'
-gem 'pry'
+gem 'pry', group: %i(development)
 gem 'google-cloud-storage'
 gem 'slim'
 gem 'redis'
