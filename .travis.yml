@@ -9,6 +9,8 @@ services:
 dist: trusty
 
 before_install:
+  - pyenv install 2.7.14 -f
+  - pyenv global 2.7.14
   - pip install awscli --user
 
 stages:
