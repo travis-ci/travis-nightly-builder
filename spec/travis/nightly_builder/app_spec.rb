@@ -86,7 +86,7 @@ describe Travis::NightlyBuilder::App do
         post "/build?repo=#{repo}"
 
         expect(last_response.status).to eq(302)
-        expect(last_response.header["Location"]).to eq("https://app.ravis-ci.com/#{owner}/#{repo}/builds/127202117")
+        expect(last_response.header["Location"]).to eq("https://app.travis-ci.com/#{owner}/#{repo}/builds/127202117")
       end
     end
   end
