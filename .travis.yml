@@ -30,7 +30,7 @@ jobs:
       script: env APP_ENV=test LOG_LEVEL=WARN bundle exec rake spec
     - stage: build latest archives
       script: bundle exec rake build_latest_archives
-#    - script: bundle exec rake build[apt-whitelist-checker,run]
+    #    - script: bundle exec rake build[apt-whitelist-checker,run]
     - stage: PHP
       script: bundle exec rake build[php-src-builder,default,'VERSION=master ALIAS=nightly ICU_RELEASE=68.1 ICU_INSTALL_DIR=$HOME/.phpenv/versions/$VERSION']
       name: nightly
@@ -53,8 +53,12 @@ jobs:
       name: 3.8-dev
     - script: bundle exec rake build['cpython-builder','default','VERSION=3.9-dev']
       name: 3.9-dev
-    - script: bundle exec rake build['cpython-builder','default','VERSION=3.10-dev ALIAS=nightly']
+    - script: bundle exec rake build['cpython-builder','default','VERSION=3.10-dev']
       name: 3.10-dev
+    - script: bundle exec rake build['cpython-builder','default','VERSION=3.11-dev']
+      name: 3.11-dev
+    - script: bundle exec rake build['cpython-builder','default','VERSION=3.12-dev ALIAS=nightly']
+      name: 3.12-dev
     - script: bundle exec rake build['cpython-builder','default','VERSION=pypy3-dev ALIAS=pypy3-nightly']
       name: pypy3-dev
     - script: bundle exec rake build['cpython-builder','default','VERSION=pypy-dev ALIAS=pypy-nightly']
