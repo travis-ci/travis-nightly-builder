@@ -42,6 +42,8 @@ jobs:
       name: 8.0snapshot
     - script: bundle exec rake build[php-src-builder,default,'VERSION=8.1snapshot ALIAS=$VERSION ICU_RELEASE=68.1 ICU_INSTALL_DIR=$HOME/.phpenv/versions/$VERSION']
       name: 8.1snapshot
+    - script: bundle exec rake build[php-src-builder,default,'VERSION=8.2snapshot ALIAS=$VERSION ICU_RELEASE=68.1 ICU_INSTALL_DIR=$HOME/.phpenv/versions/$VERSION']
+      name: 8.2snapshot
     - stage: Python
       script: bundle exec rake build['cpython-builder','default','VERSION=3.5-dev']
       name: 3.5-dev
