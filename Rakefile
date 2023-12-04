@@ -20,6 +20,8 @@ BUCKET_PREFIX = {
   trusty:  'binaries/ubuntu/14.04/x86_64/',
   xenial:  'binaries/ubuntu/16.04/x86_64/',
   bionic:  'binaries/ubuntu/18.04/x86_64/',
+  focal:  'binaries/ubuntu/20.04/x86_64/',
+  jammy:  'binaries/ubuntu/22.04/x86_64/',
   mountain_lion: 'binaries/osx/10.8/x86_64/',
   mavericks:     'binaries/osx/10.9/x86_64/',
   yosemite:      'binaries/osx/10.10/x86_64/',
@@ -141,15 +143,15 @@ RUNTIMES = {
 }
 
 SUPPORTED_OS = {
-  'perl'   => %i(precise trusty xenial bionic),
-  'perl-extras'   => %i(precise trusty xenial bionic),
-  'python' => %i(precise trusty xenial bionic),
-  'pypy2.7'   => %i(precise trusty xenial bionic),
-  'pypy3.5'   => %i(precise trusty xenial bionic),
-  'pypy3.6'   => %i(trusty xenial bionic),
-  'php'    => %i(precise trusty xenial bionic),
-  'erlang' => %i(precise trusty xenial bionic),
-  'ruby' => %i(precise trusty xenial bionic),
+  'perl'   => %i(precise trusty xenial bionic focal jammy),
+  'perl-extras'   => %i(precise trusty xenial bionic focal jammy),
+  'python' => %i(precise trusty xenial bionic focal jammy),
+  'pypy2.7'   => %i(precise trusty xenial bionic focal jammy),
+  'pypy3.5'   => %i(precise trusty xenial bionic focal jammy),
+  'pypy3.6'   => %i(trusty xenial bionic focal jammy),
+  'php'    => %i(precise trusty xenial bionic focal jammy),
+  'erlang' => %i(precise trusty xenial bionic focal jammy),
+  'ruby' => %i(precise trusty xenial bionic focal jammy),
 }
 
 RuboCop::RakeTask.new if defined?(RuboCop)
