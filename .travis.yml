@@ -6,7 +6,7 @@ cache:
 services:
   - redis
 
-dist: trusty
+dist: xenial
 
 before_install:
   - pyenv install 2.7.14 -f
