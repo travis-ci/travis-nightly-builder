@@ -18,6 +18,7 @@ WORKDIR /app
 COPY Gemfile      /app
 COPY Gemfile.lock /app
 
+RUN gem install bundler:1.17.3
 RUN bundle install --verbose --retry=3 --deployment
 
 COPY . /app
