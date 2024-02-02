@@ -65,6 +65,8 @@ jobs:
       name: 3.11-dev
     - script: bundle exec rake build['cpython-builder','default','VERSION=3.12-dev ALIAS=nightly']
       name: 3.12-dev
+    - script: bundle exec rake build['cpython-builder','default','VERSION=3.13-dev ALIAS=nightly']
+      name: 3.13-dev
     - script: bundle exec rake build['cpython-builder','default','VERSION=pypy3-dev ALIAS=pypy3-nightly']
       name: pypy3-dev
     - script: bundle exec rake build['cpython-builder','default','VERSION=pypy-dev ALIAS=pypy-nightly']
