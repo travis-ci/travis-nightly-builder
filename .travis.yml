@@ -11,7 +11,7 @@ dist: focal
 before_install:
   - pyenv install 2.7.14 -f
   - pyenv global 2.7.14
-  - pip install awscli --user
+  - pip install --trusted-host pypi.python.org --trusted-host files.pythonhosted.org awscli
 
 stages:
   - name: test
