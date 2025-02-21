@@ -1,4 +1,4 @@
-FROM ruby:2.7.6
+FROM ruby:2.7.8
 
 LABEL maintainer Travis CI GmbH <travis-docker-images@travis-ci.com>
 
@@ -18,7 +18,7 @@ WORKDIR /app
 COPY Gemfile      /app
 COPY Gemfile.lock /app
 
-RUN gem install bundler:1.17.3
+RUN gem install bundler:2.3.5
 RUN bundle install --verbose --retry=3 --deployment
 
 COPY . /app
